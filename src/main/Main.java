@@ -10,8 +10,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/view/MainForm.fxml"));
-        primaryStage.setTitle("Acme Inventory Management System");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setTitle("Acme IMS - Main");
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
