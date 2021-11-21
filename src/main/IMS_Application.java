@@ -9,13 +9,15 @@ import javafx.stage.Stage;
 public class IMS_Application extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // grab widget (container) hierarchy from .fxml file:
         Parent root = FXMLLoader.load(getClass().getResource("/view/MainForm.fxml"));
         primaryStage.setTitle("Acme IMS - Main");
+        // create new scene and set primaryStage to show it
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
     public static void main(String[] args) {
-        launch(args);
+        Application.launch(args);
     }
 }

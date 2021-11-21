@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddModProductController">
    <center>
       <BorderPane style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 10;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -24,11 +24,11 @@
          <bottom>
             <VBox alignment="CENTER_RIGHT" spacing="20.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button accessibleHelp="remove selected associated part" accessibleText="remove selected associated part" mnemonicParsing="false" prefWidth="150.0" text="Remove Associated Part" />
+                  <Button fx:id="removePartButton" accessibleHelp="remove selected associated part" accessibleText="remove selected associated part" mnemonicParsing="false" onAction="#onActionRemovePart" prefWidth="150.0" text="Remove Associated Part" />
                   <HBox alignment="CENTER_RIGHT" spacing="40.0">
                      <children>
-                        <Button accessibleHelp="save new product" accessibleText="save new product" mnemonicParsing="false" prefWidth="55.0" text="Save" />
-                        <Button accessibleHelp="cancel add product" accessibleText="cancel add product" mnemonicParsing="false" prefWidth="55.0" text="Cancel" />
+                        <Button fx:id="saveButton" accessibleHelp="save new product" accessibleText="save new product" mnemonicParsing="false" onAction="#onActionSaveProduct" prefWidth="55.0" text="Save" />
+                        <Button fx:id="cancelButton" accessibleHelp="cancel add product" accessibleText="cancel add product" cancelButton="true" mnemonicParsing="false" onAction="#onActionCancel" prefWidth="55.0" text="Cancel" />
                      </children>
                   </HBox>
                </children>
@@ -40,13 +40,13 @@
          <top>
             <HBox BorderPane.alignment="CENTER">
                <children>
-                  <Label prefWidth="140.0" text="Modify Product">
+                  <Label prefWidth="140.0" text="Add Product">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                   <Separator disable="true" focusTraversable="false" prefWidth="440.0" visible="false" />
-                  <TextField maxWidth="1.7976931348623157E308" prefWidth="200.0" promptText="Search by Product ID or Name" />
+                  <TextField fx:id="searchTxt" maxWidth="1.7976931348623157E308" prefWidth="200.0" promptText="Search by Part ID or Name" />
                </children>
                <BorderPane.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
@@ -56,25 +56,25 @@
          <right>
             <VBox alignment="TOP_RIGHT" spacing="20.0" BorderPane.alignment="CENTER_RIGHT">
                <children>
-                  <TableView>
+                  <TableView fx:id="invPartsTableView">
                      <columns>
-                        <TableColumn prefWidth="55.0" text="Part ID" />
-                        <TableColumn prefWidth="150.0" text="Part Name" />
-                        <TableColumn prefWidth="100.0" text="Inventory Level" />
-                        <TableColumn prefWidth="125.0" text="Price/Cost per Unit" />
+                        <TableColumn fx:id="invPartIdCol" prefWidth="55.0" text="Part ID" />
+                        <TableColumn fx:id="invPartNameCol" prefWidth="150.0" text="Part Name" />
+                        <TableColumn fx:id="invPartStockCol" prefWidth="100.0" text="Inventory Level" />
+                        <TableColumn fx:id="invPartPriceCol" prefWidth="125.0" text="Price/Cost per Unit" />
                      </columns>
                   </TableView>
-                  <Button accessibleHelp="add selected part as associated" accessibleText="add selected part as associated" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Add">
+                  <Button fx:id="addPartButton" accessibleHelp="add selected part as associated" accessibleText="add selected part as associated" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionAddPart" text="Add">
                      <VBox.margin>
                         <Insets right="60.0" />
                      </VBox.margin>
                   </Button>
-                  <TableView>
+                  <TableView fx:id="assocPartsTableView">
                      <columns>
-                        <TableColumn prefWidth="55.0" text="Part ID" />
-                        <TableColumn prefWidth="150.0" text="Part Name" />
-                        <TableColumn prefWidth="100.0" text="Inventory Level" />
-                        <TableColumn prefWidth="125.0" text="Price/Cost per Unit" />
+                        <TableColumn fx:id="assocPartIdCol" prefWidth="55.0" text="Part ID" />
+                        <TableColumn fx:id="assocPartNameCol" prefWidth="150.0" text="Part Name" />
+                        <TableColumn fx:id="assocPartStockCol" prefWidth="100.0" text="Inventory Level" />
+                        <TableColumn fx:id="assocPartPriceCol" prefWidth="125.0" text="Price/Cost per Unit" />
                      </columns>
                   </TableView>
                </children>
@@ -107,12 +107,12 @@
                         <Label text="Inv" GridPane.rowIndex="2" />
                         <Label text="Name" GridPane.rowIndex="1" />
                         <Label text="ID" />
-                        <TextField accessibleHelp="New Product ID" accessibleText="New Product ID" disable="true" editable="false" prefWidth="270.0" promptText="Disabled" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-                        <TextField GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <TextField GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <TextField fx:id="idTxt" accessibleHelp="New Product ID" accessibleText="New Product ID" disable="true" editable="false" prefWidth="270.0" text="Auto Gen - Disabled" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                        <TextField fx:id="nameTxt" promptText="product name" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                        <TextField fx:id="stockTxt" promptText="# in stock" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="priceTxt" promptText="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="maxTxt" promptText="minimum" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField fx:id="minTxt" promptText="maximum" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
                   <Separator disable="true" focusTraversable="false" orientation="VERTICAL" prefHeight="62.0" visible="false" />

@@ -3,24 +3,23 @@ package model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-
 /**
- * the Inventory for the management system
- * this is where all the data for parts & products resides
+ * The Inventory class for the data layer. Note that there is only one
+ * inventory, so all properties and methods are static.
+ * This is where static data stored for parts & products resides
  * @author Joseph Curtis
  * @version 2021.11.17
  */
 
 public class Inventory {
-    private static ObservableList<Part> allParts
-            = FXCollections.observableList(new ArrayList<Part>());
-    private static ObservableList<Product> allProducts
-            = FXCollections.observableList(new ArrayList<Product>());
+    private static ObservableList<Part> allParts = FXCollections.observableArrayList();
+    private static ObservableList<Product> allProducts = FXCollections.observableArrayList();
     private static int partsIdCounter = 0;
     private static int productsIdCounter = 0;
 
-    // Static Initializer to create test data
+    /**
+     * Static Initializer to create test data.
+     */
     static {
         addTestData();
     }
@@ -28,7 +27,7 @@ public class Inventory {
     // Helper function to implement adding test data
     private static void addTestData() {
         InHouse widget = new InHouse(getNewPartId(), "Widget", 7.77, 7, 1, 70, 195);
-        InHouse gadget = new InHouse(getNewPartId(), "Gadget", 7.77, 7, 1, 70, 482);
+        InHouse gadget = new InHouse(getNewPartId(), "Gadget", 12.50, 12, 1, 144, 482);
         Outsourced gizmo = new Outsourced(getNewPartId(), "Gizmo", 0.25, 100, 10, 1000, "W.E. Coyote Industries");
         Product macguffin = new Product(getNewProductId(), "MacGuffin", 99.99, 1, 1, 100);
         macguffin.addAssociatedPart(gadget);

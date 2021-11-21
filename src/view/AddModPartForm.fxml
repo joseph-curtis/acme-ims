@@ -13,16 +13,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="500.0" prefWidth="500.0"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.AddPartController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddModPartController">
    <top>
       <HBox alignment="BOTTOM_LEFT" prefWidth="460.0" spacing="40.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="TOP_LEFT" text="Add Part">
+            <Label fx:id="currentFunctionLabel" alignment="TOP_LEFT" text="Add Part">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -30,12 +25,12 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </Label>
-            <RadioButton alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" selected="true" text="In-House">
+            <RadioButton fx:id="inHouseRadioBtn" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#onActionInHouse" selected="true" text="In-House">
                <toggleGroup>
                   <ToggleGroup fx:id="source" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" text="Outsourced" toggleGroup="$source" />
+            <RadioButton fx:id="outsourcedRadioBtn" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#onActionOutsourced" text="Outsourced" toggleGroup="$source" />
          </children>
          <BorderPane.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -48,8 +43,8 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" spacing="25.0" BorderPane.alignment="CENTER_RIGHT">
          <children>
-            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="55.0" text="Save" />
-            <Button accessibleHelp="Cancel Add Part" accessibleText="Cancel Add Part" mnemonicParsing="false" prefHeight="30.0" prefWidth="55.0" text="Cancel" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onActionSave" prefHeight="30.0" prefWidth="55.0" text="Save" />
+            <Button fx:id="cancelButton" accessibleHelp="Cancel Add Part" accessibleText="Cancel Add Part" cancelButton="true" mnemonicParsing="false" onAction="#onActionCancel" prefHeight="30.0" prefWidth="55.0" text="Cancel" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -76,19 +71,19 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField accessibleHelp="part id" accessibleText="part id" alignment="CENTER_RIGHT" disable="true" editable="false" focusTraversable="false" promptText="Disabled" text="Auto Gen - Disabled" GridPane.columnIndex="1" />
-            <TextField accessibleHelp="part name" accessibleText="part name" promptText="part name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField accessibleHelp="number in inventory" accessibleText="number in inventory" promptText="# in inventory" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField accessibleHelp="part price or cost" accessibleText="part price or cost" promptText="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField accessibleHelp="maximum stock" accessibleText="maximum stock" promptText="maximum stock" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField accessibleHelp="machine id" accessibleText="machine id" promptText="In-House ID" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField accessibleHelp="minimum stock" accessibleText="minimum stock" promptText="minimum stock" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+            <TextField fx:id="idTxt" accessibleHelp="part id" accessibleText="part id" alignment="CENTER_RIGHT" disable="true" editable="false" focusTraversable="false" text="Auto Gen - Disabled" GridPane.columnIndex="1" />
+            <TextField fx:id="nameTxt" accessibleHelp="part name" accessibleText="part name" promptText="part name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="stockTxt" accessibleHelp="number in inventory" accessibleText="number in inventory" promptText="# in inventory" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="priceTxt" accessibleHelp="part price or cost" accessibleText="part price or cost" promptText="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="maxTxt" accessibleHelp="maximum stock" accessibleText="maximum stock" promptText="maximum stock" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="sourceTxt" accessibleHelp="machine id" accessibleText="machine id" promptText="In-House ID" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="minTxt" accessibleHelp="minimum stock" accessibleText="minimum stock" promptText="minimum stock" GridPane.columnIndex="3" GridPane.rowIndex="4" />
             <Label text="ID" />
             <Label text="Name" GridPane.rowIndex="1" />
             <Label text="Inv" GridPane.rowIndex="2" />
             <Label text="Price/Cost" GridPane.rowIndex="3" />
             <Label text="Max" GridPane.rowIndex="4" />
-            <Label text="Machine ID" GridPane.rowIndex="5" />
+            <Label fx:id="sourceLabel" text="Machine ID" GridPane.rowIndex="5" />
             <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" nodeOrientation="RIGHT_TO_LEFT" text="Min" GridPane.columnIndex="2" GridPane.rowIndex="4" />
          </children>
          <padding>
