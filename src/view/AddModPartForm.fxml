@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddModPartController">
+<BorderPane fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddModPartController">
    <top>
       <HBox alignment="BOTTOM_LEFT" prefWidth="460.0" spacing="40.0" BorderPane.alignment="CENTER">
          <children>
@@ -71,7 +71,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField fx:id="idTxt" accessibleHelp="part id" accessibleText="part id" alignment="CENTER_RIGHT" disable="true" editable="false" focusTraversable="false" text="Auto Gen - Disabled" GridPane.columnIndex="1" />
+            <TextField fx:id="idTxt" accessibleHelp="part id" accessibleText="part id" alignment="CENTER_RIGHT" disable="true" editable="false" focusTraversable="false" promptText="Auto Gen - Disabled" GridPane.columnIndex="1" />
             <TextField fx:id="nameTxt" accessibleHelp="part name" accessibleText="part name" promptText="part name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="stockTxt" accessibleHelp="number in inventory" accessibleText="number in inventory" promptText="# in inventory" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="priceTxt" accessibleHelp="part price or cost" accessibleText="part price or cost" promptText="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddModProductController">
+<BorderPane fx:id="rootBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddModProductController">
    <center>
       <BorderPane style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 10;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -40,7 +40,7 @@
          <top>
             <HBox BorderPane.alignment="CENTER">
                <children>
-                  <Label prefWidth="140.0" text="Add Product">
+                  <Label fx:id="currentFunctionLabel" prefWidth="140.0" text="Add Product">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -107,7 +107,7 @@
                         <Label text="Inv" GridPane.rowIndex="2" />
                         <Label text="Name" GridPane.rowIndex="1" />
                         <Label text="ID" />
-                        <TextField fx:id="idTxt" accessibleHelp="New Product ID" accessibleText="New Product ID" disable="true" editable="false" prefWidth="270.0" text="Auto Gen - Disabled" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                        <TextField fx:id="idTxt" accessibleHelp="New Product ID" accessibleText="New Product ID" disable="true" editable="false" prefWidth="270.0" promptText="Auto Gen - Disabled" GridPane.columnIndex="1" GridPane.columnSpan="2" />
                         <TextField fx:id="nameTxt" promptText="product name" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                         <TextField fx:id="stockTxt" promptText="# in stock" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField fx:id="priceTxt" promptText="\$" GridPane.columnIndex="1" GridPane.rowIndex="3" />
