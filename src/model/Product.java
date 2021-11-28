@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * A finished Product with associated parts
  * @author Joseph Curtis
- * @version 2021.11.16
+ * @version 2021.11.28
  */
 
 public class Product {
@@ -21,7 +21,9 @@ public class Product {
     private int max;
 
     public Product(int id, String name, double price, int stock, int min, int max) {
-        associatedParts = FXCollections.observableList(new ArrayList<Part>());
+        associatedParts = FXCollections.observableArrayList();
+//        another way to initialize an observable Array:
+//        associatedParts = FXCollections.observableList(new ArrayList<Part>());
         this.id = id;
         this.name = name;
         this.price = price;

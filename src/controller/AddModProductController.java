@@ -1,22 +1,29 @@
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.Inventory;
-import model.Part;
+import javafx.scene.layout.BorderPane;
+import model.*;
 import util.GuiUtil;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * The Controller class for the Add and Modify Product forms.
+ * @author Joseph Curtis
+ * @version 2021.11.28
+ */
+
 public class AddModProductController implements Initializable {
+    private Product existingProduct;
+    private ObservableList<Part> assocPartsList = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class
@@ -30,10 +37,47 @@ public class AddModProductController implements Initializable {
         invPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         invPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
         invPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        assocPartsTableView.setItems(assocPartsList);
+        assocPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        assocPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        assocPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+    }
+
+    public void editProductPass(Product oldProduct) {
+        existingProduct = oldProduct;
+        assocPartsList = oldProduct.getAllAssociatedParts();
+        currentFunctionLabel.setText("Modify Product");
+
+        idTxt.setText(String.valueOf(oldProduct.getId()));
+        nameTxt.setText(oldProduct.getName());
+        stockTxt.setText(String.valueOf(oldProduct.getStock()));
+        priceTxt.setText(String.valueOf(oldProduct.getPrice()));
+        minTxt.setText(String.valueOf(oldProduct.getMin()));
+        maxTxt.setText(String.valueOf(oldProduct.getMax()));
+
+        assocPartsTableView.setItems(oldProduct.getAllAssociatedParts());
+        assocPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        assocPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        assocPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
     @FXML
+    private BorderPane rootBorderPane;
+
+    @FXML
     private Button addPartButton;
+
+    @FXML
+    private Button cancelButton;
+
+    @FXML
+    private Button removePartButton;
+
+    @FXML
+    private Button saveButton;
 
     @FXML
     private TableView<Part> assocPartsTableView;
@@ -51,12 +95,6 @@ public class AddModProductController implements Initializable {
     private TableColumn<Part, Integer> assocPartStockCol;
 
     @FXML
-    private Button cancelButton;
-
-    @FXML
-    private TextField idTxt;
-
-    @FXML
     private TableView<Part> invPartsTableView;
 
     @FXML
@@ -72,6 +110,9 @@ public class AddModProductController implements Initializable {
     private TableColumn<Part, Integer> invPartStockCol;
 
     @FXML
+    private TextField idTxt;
+
+    @FXML
     private TextField maxTxt;
 
     @FXML
@@ -84,35 +125,63 @@ public class AddModProductController implements Initializable {
     private TextField priceTxt;
 
     @FXML
-    private Button removePartButton;
-
-    @FXML
-    private Button saveButton;
+    private TextField stockTxt;
 
     @FXML
     private TextField searchTxt;
 
     @FXML
-    private TextField stockTxt;
-
-    @FXML
-    void onActionAddPart(ActionEvent event) {
-
-    }
+    private Label currentFunctionLabel;
 
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneOnEvent(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
+    }
+
+    @FXML
+    void onActionAddPart(ActionEvent event) {
+        Part assocPart = (Part)invPartsTableView.getSelectionModel().getSelectedItem();
+        if (!assocPartsList.contains(assocPart) && assocPart != null)
+            assocPartsList.add(assocPart);
     }
 
     @FXML
     void onActionRemovePart(ActionEvent event) {
-
+        assocPartsList.remove((Part)assocPartsTableView.getSelectionModel().getSelectedItem());
     }
 
     @FXML
-    void onActionSaveProduct(ActionEvent event) {
+    void onActionSaveProduct(ActionEvent event) throws IOException {
+        int id;
+        String name = nameTxt.getText();
+        double price = Double.parseDouble(priceTxt.getText());
+        int stock = Integer.parseInt(stockTxt.getText());
+        int min = Integer.parseInt(minTxt.getText());
+        int max = Integer.parseInt(maxTxt.getText());
 
+        if (existingProduct == null) {
+            id = Inventory.getNewProductId();       // get new ID for new product
+            Product newProduct = new Product(id, name, price, stock, min, max);
+
+            // add all associated parts to new product
+            for (Part part : assocPartsList) {
+                newProduct.addAssociatedPart(part);
+            }
+            // add new product
+            Inventory.addProduct(newProduct);
+        } else {
+            id = existingProduct.getId();               // get ID of existing product to edit
+            Product modifiedProduct = new Product(id, name, price, stock, min, max);
+            // add all associated parts to modified product
+            for (Part part : assocPartsList) {
+                modifiedProduct.addAssociatedPart(part);
+            }
+            // replace existing product with edited one
+            Inventory.deleteProduct(existingProduct);
+            Inventory.addProduct(modifiedProduct);
+        }
+
+        GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
 }

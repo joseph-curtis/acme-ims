@@ -16,10 +16,10 @@ import java.io.IOException;
  */
 public class GuiUtil {
 
-    // helper function to switch scenes
-    public static void changeSceneOnEvent(ActionEvent event,
-                                          String fxmlFileName,
-                                          String windowTitle) throws IOException {
+    // helper function to switch scenes when "New Part/Product" button is clicked
+    public static void changeSceneNew(ActionEvent event,
+                                      String fxmlFileName,
+                                      String windowTitle) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Parent root = FXMLLoader.load(GuiUtil.class.getResource(fxmlFileName));
         stage.setTitle(windowTitle);
@@ -27,8 +27,20 @@ public class GuiUtil {
         stage.show();
     }
 
-    public static void changeSceneOnEvent(ActionEvent event,
-                                          String fxmlFileName) throws IOException {
-        changeSceneOnEvent(event, fxmlFileName, "Acme IMS");
+    public static void changeSceneNew(ActionEvent event, String fxmlFileName) throws IOException {
+        changeSceneNew(event, fxmlFileName, "Acme IMS");
+    }
+
+    // helper function to switch scenes when "New Part/Product" button is clicked
+    public static void changeSceneModify(ActionEvent event, FXMLLoader loader, String windowTitle) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Parent root = loader.getRoot();
+        stage.setTitle(windowTitle);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    public static void changeSceneModify(ActionEvent event, FXMLLoader loader) {
+        changeSceneModify(event, loader, "Acme IMS");
     }
 }

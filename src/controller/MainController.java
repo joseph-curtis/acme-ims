@@ -2,6 +2,7 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -9,6 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
+import javafx.scene.layout.BorderPane;
 import model.Inventory;
 import model.Part;
 import model.Product;
@@ -18,12 +20,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * The Controller class for the Main form.
+ * @author Joseph Curtis
+ * @version 2021.11.28
+ */
+
 public class MainController implements Initializable {
 
     /**
-     * Initializes the controller class
-     * @param url
-     * @param resourceBundle
+     * Initializes the controller class, formatting the TableView columns
+     * @param url (not used)
+     * @param resourceBundle (not used)
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,6 +49,9 @@ public class MainController implements Initializable {
     }
 
     // Controls declarations
+
+    @FXML
+    private BorderPane rootBorderPane;
 
     @FXML
     private Button exitButton;
@@ -103,22 +114,24 @@ public class MainController implements Initializable {
 
     @FXML
     void onActionAddPart(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneOnEvent(event, "/view/AddModPartForm.fxml", "Acme IMS - Add Part");
+        GuiUtil.changeSceneNew(event, "/view/AddModPartForm.fxml", "Acme IMS - Add Part");
     }
 
     @FXML
     void onActionAddProduct(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneOnEvent(event, "/view/AddModProductForm.fxml", "Acme IMS - Add Product");
+        GuiUtil.changeSceneNew(event, "/view/AddModProductForm.fxml", "Acme IMS - Add Product");
     }
 
     @FXML
     void onActionDeletePart(ActionEvent event) {
-        // TODO implement button action
+        Inventory.deletePart((Part)partsTable.getSelectionModel().getSelectedItem());
+        // TODO implement confirm dialog
     }
 
     @FXML
     void onActionDeleteProduct(ActionEvent event) {
-        // TODO implement button action
+        Inventory.deleteProduct((Product)productsTable.getSelectionModel().getSelectedItem());
+        // TODO implement confirm dialog
     }
 
     @FXML
@@ -128,12 +141,34 @@ public class MainController implements Initializable {
 
     @FXML
     void onActionModifyPart(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneOnEvent(event, "/view/AddModPartForm.fxml", "Acme IMS - Modify Part");
+        Part selectedPart = (Part)partsTable.getSelectionModel().getSelectedItem();
+        if (selectedPart == null)
+            return;     // if nothing is selected, do nothing
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/AddModPartForm.fxml"));
+        loader.load();
+
+        AddModPartController editPartController = loader.getController();
+        editPartController.editPartPass(selectedPart);
+
+        GuiUtil.changeSceneModify(event, loader, "Acme IMS - Modify Part");
     }
 
     @FXML
     void onActionModifyProduct(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneOnEvent(event, "/view/AddModProductForm.fxml", "Acme IMS - Modify Product");
+        Product selectedProduct = (Product)productsTable.getSelectionModel().getSelectedItem();
+        if (selectedProduct == null)
+            return;     // if nothing is selected, do nothing
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/AddModProductForm.fxml"));
+        loader.load();
+
+        AddModProductController editProductController = loader.getController();
+        editProductController.editProductPass(selectedProduct);
+
+        GuiUtil.changeSceneModify(event, loader, "Acme IMS - Modify Product");
     }
 
     @FXML
