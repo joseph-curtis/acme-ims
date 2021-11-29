@@ -2,14 +2,8 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import model.InHouse;
 import model.Inventory;
 import model.Outsourced;
@@ -17,8 +11,6 @@ import model.Part;
 import util.GuiUtil;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * The Controller class for the Add and Modify Part forms.
@@ -114,27 +106,33 @@ public class AddModPartController {
     @FXML
     void onActionSave(ActionEvent event) throws IOException {
         int id;
-        if (existingPart == null) {
-            id = Inventory.getNewPartId();  // get new ID for new part
-        } else {
-            id = existingPart.getId();          // get ID of existing part to edit
-            Inventory.deletePart(existingPart); // replace existing part with edited one
-        }
+        Part savedPart;
+
         String name = nameTxt.getText();
         double price = Double.parseDouble(priceTxt.getText());
         int stock = Integer.parseInt(stockTxt.getText());
         int min = Integer.parseInt(minTxt.getText());
         int max = Integer.parseInt(maxTxt.getText());
 
+        if (existingPart == null) {
+            id = Inventory.getNewPartId();  // get new ID for new part
+        } else {
+            id = existingPart.getId();          // get ID of existing part to edit
+        }
+
         if (inHouseRadioBtn.isSelected()) {
             int machineId = Integer.parseInt(sourceTxt.getText());
-            Inventory.addPart(new InHouse(id, name, price, stock, min, max, machineId));
+            savedPart = new InHouse(id, name, price, stock, min, max, machineId);
         } else if (outsourcedRadioBtn.isSelected()) {
             String companyName = sourceTxt.getText();
-            Inventory.addPart(new Outsourced(id, name, price, stock, min, max, companyName));
+            savedPart = new Outsourced(id, name, price, stock, min, max, companyName);
         } else {
             throw new IOException("No Radio Button selected!");
         }
+
+        Inventory.addPart(savedPart);
+        Inventory.deletePart(existingPart); // replace existing part with edited one, if exists
+
         GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 

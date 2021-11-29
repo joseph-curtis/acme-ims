@@ -172,13 +172,14 @@ public class AddModProductController implements Initializable {
         } else {
             id = existingProduct.getId();               // get ID of existing product to edit
             Product modifiedProduct = new Product(id, name, price, stock, min, max);
+
             // add all associated parts to modified product
             for (Part part : assocPartsList) {
                 modifiedProduct.addAssociatedPart(part);
             }
             // replace existing product with edited one
-            Inventory.deleteProduct(existingProduct);
             Inventory.addProduct(modifiedProduct);
+            Inventory.deleteProduct(existingProduct);
         }
 
         GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
