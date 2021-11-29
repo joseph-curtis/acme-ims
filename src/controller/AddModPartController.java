@@ -41,20 +41,11 @@ public class AddModPartController {
         maxTxt.setText(String.valueOf(part.getMax()));
 
         if (part instanceof InHouse) {
+            inHouseRadioBtn.fireEvent(new ActionEvent());
             sourceTxt.setText(String.valueOf(((InHouse) part).getMachineId()));
         } else if (part instanceof Outsourced) {
-            changeOutsourced(true);
+            outsourcedRadioBtn.fireEvent(new ActionEvent());
             sourceTxt.setText(String.valueOf(((Outsourced) part).getCompanyName()));
-        }
-    }
-
-    private void changeOutsourced(boolean outsourced) {
-        if (outsourced) {
-            outsourcedRadioBtn.setSelected(true);
-            sourceLabel.setText("Company Name");
-        } else {
-            inHouseRadioBtn.setSelected(true);
-            sourceLabel.setText("Machine ID");
         }
     }
 
@@ -110,12 +101,14 @@ public class AddModPartController {
 
     @FXML
     void onActionInHouse(ActionEvent event) {
-        changeOutsourced(false);
+        inHouseRadioBtn.setSelected(true);
+        sourceLabel.setText("Machine ID");
     }
 
     @FXML
     void onActionOutsourced(ActionEvent event) {
-        changeOutsourced(true);
+        outsourcedRadioBtn.setSelected(true);
+        sourceLabel.setText("Company Name");
     }
 
     @FXML
