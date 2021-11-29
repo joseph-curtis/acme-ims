@@ -41,6 +41,14 @@ public class AddModPartController {
         }
     }
 
+    private int acquireId() {
+        if (existingPart == null) {
+            return Inventory.getNewPartId();  // get new ID for new part
+        } else {
+            return existingPart.getId();          // get ID of existing part to edit
+        }
+    }
+
     @FXML
     private BorderPane rootBorderPane;
 
@@ -105,20 +113,14 @@ public class AddModPartController {
 
     @FXML
     void onActionSave(ActionEvent event) throws IOException {
-        int id;
         Part savedPart;
 
+        int id = acquireId();
         String name = nameTxt.getText();
         double price = Double.parseDouble(priceTxt.getText());
         int stock = Integer.parseInt(stockTxt.getText());
         int min = Integer.parseInt(minTxt.getText());
         int max = Integer.parseInt(maxTxt.getText());
-
-        if (existingPart == null) {
-            id = Inventory.getNewPartId();  // get new ID for new part
-        } else {
-            id = existingPart.getId();          // get ID of existing part to edit
-        }
 
         if (inHouseRadioBtn.isSelected()) {
             int machineId = Integer.parseInt(sourceTxt.getText());
@@ -130,8 +132,11 @@ public class AddModPartController {
             throw new IOException("No Radio Button selected!");
         }
 
-        Inventory.addPart(savedPart);
-        Inventory.deletePart(existingPart); // replace existing part with edited one, if exists
+        if (existingPart == null) {
+            Inventory.addPart(savedPart);
+        } else {
+            Inventory.updatePart(id, savedPart);
+        }
 
         GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }

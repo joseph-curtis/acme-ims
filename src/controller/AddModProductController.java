@@ -64,6 +64,13 @@ public class AddModProductController implements Initializable {
         assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
+    private void saveAssociatedParts(Product product) {
+        // add all associated parts to new or modified product
+        for (Part part : assocPartsList) {
+            product.addAssociatedPart(part);
+        }
+    }
+
     @FXML
     private BorderPane rootBorderPane;
 
@@ -162,24 +169,15 @@ public class AddModProductController implements Initializable {
         if (existingProduct == null) {
             id = Inventory.getNewProductId();       // get new ID for new product
             Product newProduct = new Product(id, name, price, stock, min, max);
+            saveAssociatedParts(newProduct);        // save list of associated Parts
 
-            // add all associated parts to new product
-            for (Part part : assocPartsList) {
-                newProduct.addAssociatedPart(part);
-            }
-            // add new product
             Inventory.addProduct(newProduct);
         } else {
-            id = existingProduct.getId();               // get ID of existing product to edit
+            id = existingProduct.getId();           // get ID of existing product to edit
             Product modifiedProduct = new Product(id, name, price, stock, min, max);
+            saveAssociatedParts(modifiedProduct);   // save list of associated Parts
 
-            // add all associated parts to modified product
-            for (Part part : assocPartsList) {
-                modifiedProduct.addAssociatedPart(part);
-            }
-            // replace existing product with edited one
-            Inventory.addProduct(modifiedProduct);
-            Inventory.deleteProduct(existingProduct);
+            Inventory.updateProduct(id, modifiedProduct);
         }
 
         GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");

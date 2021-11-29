@@ -136,6 +136,7 @@ public class Inventory {
             }
             i++;    // go to next record
         }
+        //TODO update all associated parts as well?
     }
 
     /**
