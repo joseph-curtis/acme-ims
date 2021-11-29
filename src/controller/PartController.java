@@ -18,10 +18,10 @@ import java.io.IOException;
  * @version 2021.11.28
  */
 
-public class AddModPartController {
+public class PartController {
     private Part existingPart;
 
-    public void editPartPass(Part part) {
+    public void modifyPartPass(Part part) {
         existingPart = part;
         currentFunctionLabel.setText("Modify Part");
 
@@ -96,7 +96,7 @@ public class AddModPartController {
 
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
     @FXML
@@ -138,7 +138,7 @@ public class AddModPartController {
             Inventory.updatePart(id, savedPart);
         }
 
-        GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
 }

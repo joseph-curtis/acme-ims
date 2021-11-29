@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
  * @version 2021.11.28
  */
 
-public class AddModProductController implements Initializable {
+public class ProductController implements Initializable {
     private Product existingProduct;
     private ObservableList<Part> assocPartsList = FXCollections.observableArrayList();
 
@@ -45,7 +45,7 @@ public class AddModProductController implements Initializable {
         assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
-    public void editProductPass(Product oldProduct) {
+    public void modifyProductPass(Product oldProduct) {
         existingProduct = oldProduct;
         assocPartsList = oldProduct.getAllAssociatedParts();
         currentFunctionLabel.setText("Modify Product");
@@ -142,7 +142,7 @@ public class AddModProductController implements Initializable {
 
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
     @FXML
@@ -180,7 +180,7 @@ public class AddModProductController implements Initializable {
             Inventory.updateProduct(id, modifiedProduct);
         }
 
-        GuiUtil.changeSceneNew(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
 }

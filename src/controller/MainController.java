@@ -2,7 +2,6 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -114,12 +113,12 @@ public class MainController implements Initializable {
 
     @FXML
     void onActionAddPart(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneNew(event, "/view/AddModPartForm.fxml", "Acme IMS - Add Part");
+        GuiUtil.changeScene(event, "/view/PartForm.fxml", "Acme IMS - Add Part");
     }
 
     @FXML
     void onActionAddProduct(ActionEvent event) throws IOException {
-        GuiUtil.changeSceneNew(event, "/view/AddModProductForm.fxml", "Acme IMS - Add Product");
+        GuiUtil.changeScene(event, "/view/ProductForm.fxml", "Acme IMS - Add Product");
     }
 
     @FXML
@@ -145,14 +144,8 @@ public class MainController implements Initializable {
         if (selectedPart == null)
             return;     // if nothing is selected, do nothing
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/AddModPartForm.fxml"));
-        loader.load();
-
-        AddModPartController editPartController = loader.getController();
-        editPartController.editPartPass(selectedPart);
-
-        GuiUtil.changeSceneModify(event, loader, "Acme IMS - Modify Part");
+        GuiUtil.changeScenePassPart(event, selectedPart,
+                "/view/PartForm.fxml", "Acme IMS - Modify Part");
     }
 
     @FXML
@@ -161,14 +154,8 @@ public class MainController implements Initializable {
         if (selectedProduct == null)
             return;     // if nothing is selected, do nothing
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/AddModProductForm.fxml"));
-        loader.load();
-
-        AddModProductController editProductController = loader.getController();
-        editProductController.editProductPass(selectedProduct);
-
-        GuiUtil.changeSceneModify(event, loader, "Acme IMS - Modify Product");
+        GuiUtil.changeScenePassProduct(event, selectedProduct,
+                "/view/ProductForm.fxml", "Acme IMS - Modify Product");
     }
 
     @FXML

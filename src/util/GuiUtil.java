@@ -1,46 +1,63 @@
 package util;
 
+import controller.PartController;
+import controller.ProductController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
+import model.Part;
+import model.Product;
 
 import java.io.IOException;
 
 /**
  * Contains helper functions for changing scenes
  * Use for easier maintenance of code
- * instead of copying the same code over and over
+ * instead of code duplication
  */
 public class GuiUtil {
 
-    // helper function to switch scenes when "New Part/Product" button is clicked
-    public static void changeSceneNew(ActionEvent event,
-                                      String fxmlFileName,
-                                      String windowTitle) throws IOException {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Parent root = FXMLLoader.load(GuiUtil.class.getResource(fxmlFileName));
+    // switches scene to create new part/product
+    public static FXMLLoader changeScene(ActionEvent event,
+                                         String fxmlFileName,
+                                         String windowTitle) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(GuiUtil.class.getResource(fxmlFileName));
+        Parent root = loader.load();
+
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         stage.setTitle(windowTitle);
         stage.setScene(new Scene(root));
         stage.show();
+
+        return loader;
     }
 
-    public static void changeSceneNew(ActionEvent event, String fxmlFileName) throws IOException {
-        changeSceneNew(event, fxmlFileName, "Acme IMS");
+    // switches scene to Modify Part
+    public static void changeScenePassPart(ActionEvent event,
+                                           Part passedPart,
+                                           String fxmlFileName,
+                                           String windowTitle) throws IOException {
+
+        FXMLLoader loader = changeScene(event, fxmlFileName, windowTitle);
+
+        PartController modifyPartController = loader.getController();
+        modifyPartController.modifyPartPass(passedPart);
     }
 
-    // helper function to switch scenes when "New Part/Product" button is clicked
-    public static void changeSceneModify(ActionEvent event, FXMLLoader loader, String windowTitle) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Parent root = loader.getRoot();
-        stage.setTitle(windowTitle);
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
+    // switches scene to Modify Product
+    public static void changeScenePassProduct(ActionEvent event,
+                                              Product passedProduct,
+                                              String fxmlFileName,
+                                              String windowTitle) throws IOException {
 
-    public static void changeSceneModify(ActionEvent event, FXMLLoader loader) {
-        changeSceneModify(event, loader, "Acme IMS");
+        FXMLLoader loader = changeScene(event, fxmlFileName, windowTitle);
+
+        ProductController modifyProductController = loader.getController();
+        modifyProductController.modifyProductPass(passedProduct);
     }
 }
