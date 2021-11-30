@@ -47,7 +47,7 @@ public class MainController implements Initializable {
         productStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
-    // Controls declarations
+    // Control declarations
 
     @FXML
     private BorderPane rootBorderPane;
@@ -109,7 +109,7 @@ public class MainController implements Initializable {
     @FXML
     private Button productsModifyButton;
 
-    // event declarations
+    // Event declarations
 
     @FXML
     void onActionAddPart(ActionEvent event) throws IOException {

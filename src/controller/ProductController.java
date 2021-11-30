@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
  */
 
 public class ProductController implements Initializable {
+
     private Product existingProduct;
     private ObservableList<Part> assocPartsList = FXCollections.observableArrayList();
 
@@ -45,7 +46,7 @@ public class ProductController implements Initializable {
         assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
-    public void modifyProductPass(Product oldProduct) {
+    public void setExistingProduct(Product oldProduct) {
         existingProduct = oldProduct;
         assocPartsList = oldProduct.getAllAssociatedParts();
         currentFunctionLabel.setText("Modify Product");

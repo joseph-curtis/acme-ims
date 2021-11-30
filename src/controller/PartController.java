@@ -19,9 +19,10 @@ import java.io.IOException;
  */
 
 public class PartController {
+
     private Part existingPart;
 
-    public void modifyPartPass(Part part) {
+    public void setExistingPart(Part part) {
         existingPart = part;
         currentFunctionLabel.setText("Modify Part");
 
@@ -103,12 +104,14 @@ public class PartController {
     void onActionInHouse(ActionEvent event) {
         inHouseRadioBtn.setSelected(true);
         sourceLabel.setText("Machine ID");
+        sourceTxt.setPromptText("In-House ID");
     }
 
     @FXML
     void onActionOutsourced(ActionEvent event) {
         outsourcedRadioBtn.setSelected(true);
         sourceLabel.setText("Company Name");
+        sourceTxt.setPromptText("Outsourced Company");
     }
 
     @FXML

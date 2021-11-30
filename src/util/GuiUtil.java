@@ -46,7 +46,7 @@ public class GuiUtil {
         FXMLLoader loader = changeScene(event, fxmlFileName, windowTitle);
 
         PartController modifyPartController = loader.getController();
-        modifyPartController.modifyPartPass(passedPart);
+        modifyPartController.setExistingPart(passedPart);
     }
 
     // switches scene to Modify Product
@@ -58,6 +58,6 @@ public class GuiUtil {
         FXMLLoader loader = changeScene(event, fxmlFileName, windowTitle);
 
         ProductController modifyProductController = loader.getController();
-        modifyProductController.modifyProductPass(passedProduct);
+        modifyProductController.setExistingProduct(passedProduct);
     }
 }
