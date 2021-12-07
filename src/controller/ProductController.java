@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import model.*;
 import util.GuiUtil;
@@ -27,9 +28,9 @@ public class ProductController implements Initializable {
     private ObservableList<Part> assocPartsList = FXCollections.observableArrayList();
 
     /**
-     * Initializes the controller class
-     * @param url
-     * @param resourceBundle
+     * Initializes the controller class -- sets up table views
+     * @param url (not used)
+     * @param resourceBundle (not used)
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -46,6 +47,10 @@ public class ProductController implements Initializable {
         assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
+    /**
+     * This sets all properties for edited item to populate to corresponding text fields
+     * @param oldProduct existing product in inventory to be edited
+     */
     public void setExistingProduct(Product oldProduct) {
         existingProduct = oldProduct;
         assocPartsList = oldProduct.getAllAssociatedParts();
@@ -65,8 +70,11 @@ public class ProductController implements Initializable {
         assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
+    /**
+     * add all associated parts to new or modified product
+     * @param product the product to be added or modified
+     */
     private void saveAssociatedParts(Product product) {
-        // add all associated parts to new or modified product
         for (Part part : assocPartsList) {
             product.addAssociatedPart(part);
         }
@@ -142,6 +150,9 @@ public class ProductController implements Initializable {
     private Label currentFunctionLabel;
 
     @FXML
+    private Label searchErrorLabel;
+
+    @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
@@ -178,10 +189,38 @@ public class ProductController implements Initializable {
             Product modifiedProduct = new Product(id, name, price, stock, min, max);
             saveAssociatedParts(modifiedProduct);   // save list of associated Parts
 
-            Inventory.updateProduct(id, modifiedProduct);
+            int index = Inventory.getAllProducts().indexOf(existingProduct);
+            if (index < 0)
+                throw new IOException("Existing product to modify does not exist in Inventory!");
+            else
+                Inventory.updateProduct(index, modifiedProduct);
         }
 
         GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
+    }
+
+    @FXML
+    void searchTxtKeyTyped(KeyEvent event) {
+        String query = searchTxt.getText().trim();
+
+        ObservableList<Part> partsFound = Inventory.lookupPart(query);
+
+        try {
+            int id = Integer.parseInt(query);
+            Part partIdMatch = Inventory.lookupPart(id);
+            if (partIdMatch != null)
+                partsFound.add(partIdMatch);
+        } catch (NumberFormatException exception) {
+            // ignore exception, do not add anything to list
+        }
+
+        invPartsTableView.setItems(partsFound);
+
+        if (partsFound.size() == 0) {
+            searchErrorLabel.setText("No part found with Name or ID entered");
+        } else {
+            searchErrorLabel.setText("");
+        }
     }
 
 }

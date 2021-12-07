@@ -22,26 +22,34 @@ public class PartController {
 
     private Part existingPart;
 
-    public void setExistingPart(Part part) {
-        existingPart = part;
+    /**
+     * This sets all properties for edited item to populate to corresponding text fields
+     * @param oldPart existing part in inventory to be edited
+     */
+    public void setExistingPart(Part oldPart) {
+        existingPart = oldPart;
         currentFunctionLabel.setText("Modify Part");
 
-        idTxt.setText(String.valueOf(part.getId()));
-        nameTxt.setText(part.getName());
-        stockTxt.setText(String.valueOf(part.getStock()));
-        priceTxt.setText(String.valueOf(part.getPrice()));
-        minTxt.setText(String.valueOf(part.getMin()));
-        maxTxt.setText(String.valueOf(part.getMax()));
+        idTxt.setText(String.valueOf(oldPart.getId()));
+        nameTxt.setText(oldPart.getName());
+        stockTxt.setText(String.valueOf(oldPart.getStock()));
+        priceTxt.setText(String.valueOf(oldPart.getPrice()));
+        minTxt.setText(String.valueOf(oldPart.getMin()));
+        maxTxt.setText(String.valueOf(oldPart.getMax()));
 
-        if (part instanceof InHouse) {
+        if (oldPart instanceof InHouse) {
             inHouseRadioBtn.fireEvent(new ActionEvent());
-            sourceTxt.setText(String.valueOf(((InHouse) part).getMachineId()));
-        } else if (part instanceof Outsourced) {
+            sourceTxt.setText(String.valueOf(((InHouse) oldPart).getMachineId()));
+        } else if (oldPart instanceof Outsourced) {
             outsourcedRadioBtn.fireEvent(new ActionEvent());
-            sourceTxt.setText(String.valueOf(((Outsourced) part).getCompanyName()));
+            sourceTxt.setText(String.valueOf(((Outsourced) oldPart).getCompanyName()));
         }
     }
 
+    /**
+     * gets existing ID or new unique ID if part is new
+     * @return an ID unique to Inventory
+     */
     private int acquireId() {
         if (existingPart == null) {
             return Inventory.getNewPartId();  // get new ID for new part

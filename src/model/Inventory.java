@@ -97,7 +97,8 @@ public class Inventory {
      * @return a list of parts whose Name contains partName parameter
      */
     public static ObservableList<Part> lookupPart(String partName) {
-        ObservableList<Part> partsFoundList = FXCollections.observableList(new ArrayList<Part>());
+        ObservableList<Part> partsFoundList = FXCollections.observableArrayList();
+//      //            Could also use:     //  FXCollections.observableList(new ArrayList<Part>());
 
         for (Part part : allParts) {
             if (part.getName().toLowerCase().contains(partName.toLowerCase())) {
@@ -112,7 +113,8 @@ public class Inventory {
      * @return a list of products whose Name contains productsName parameter
      */
     public static ObservableList<Product> lookupProduct(String productName) {
-        ObservableList<Product> productsFoundList = FXCollections.observableList(new ArrayList<Product>());
+        ObservableList<Product> productsFoundList = FXCollections.observableArrayList();
+//      //                  Could also use:     //  FXCollections.observableList(new ArrayList<Product>());
 
         for (Product product : allProducts) {
             if (product.getName().toLowerCase().contains(productName.toLowerCase())) {
@@ -140,19 +142,25 @@ public class Inventory {
     }
 
     /**
-     * @param index the ID of the Product to edit
-     * @param newProduct Product object to replace existing Product with same ID
+     * @param index the observableArrayList index in allProducts to target
+     * @param newProduct Product to replace existing object in allProducts
      */
     public static void updateProduct(int index, Product newProduct) {
+        if (index >= 0)
+            allProducts.set(index, newProduct);
+
+        /*  // ForEach method does not need index parameter
         int i = 0;  // index for allProducts array list
+        int partID = newProduct.getId();
 
         for (Product product : allProducts) {
-            if (product.getId() == index) {
+            if (product.getId() == partID) {
                 allProducts.set(i, newProduct);
                 return;
             }
             i++;    // go to next record
         }
+         */
     }
 
     /**

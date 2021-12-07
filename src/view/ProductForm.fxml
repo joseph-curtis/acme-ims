@@ -46,7 +46,7 @@
                      </font>
                   </Label>
                   <Separator disable="true" focusTraversable="false" prefWidth="440.0" visible="false" />
-                  <TextField fx:id="searchTxt" maxWidth="1.7976931348623157E308" prefWidth="200.0" promptText="Search by Part ID or Name" />
+                  <TextField fx:id="searchTxt" maxWidth="1.7976931348623157E308" onKeyTyped="#searchTxtKeyTyped" prefWidth="200.0" promptText="Search by Part ID or Name" />
                </children>
                <BorderPane.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
@@ -64,11 +64,16 @@
                         <TableColumn fx:id="invPartPriceCol" prefWidth="125.0" text="Price/Cost per Unit" />
                      </columns>
                   </TableView>
-                  <Button fx:id="addPartButton" accessibleHelp="add selected part as associated" accessibleText="add selected part as associated" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionAddPart" text="Add">
-                     <VBox.margin>
-                        <Insets right="60.0" />
-                     </VBox.margin>
-                  </Button>
+                  <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                     <children>
+                        <Label fx:id="searchErrorLabel" focusTraversable="false" textFill="RED">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="addPartButton" accessibleHelp="add selected part as associated" accessibleText="add selected part as associated" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionAddPart" text="Add" />
+                     </children>
+                  </HBox>
                   <TableView fx:id="assocPartsTableView">
                      <columns>
                         <TableColumn fx:id="assocPartIdCol" prefWidth="55.0" text="Part ID" />

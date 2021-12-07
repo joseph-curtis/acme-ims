@@ -33,7 +33,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="partSearchTxt" maxWidth="1.7976931348623157E308" onInputMethodTextChanged="#partSearchTxtChanged" prefWidth="200.0" promptText="Search by Part ID or Name" />
+                        <TextField fx:id="partSearchTxt" maxWidth="1.7976931348623157E308" onKeyTyped="#partSearchKeyTyped" prefWidth="200.0" promptText="Search by Part ID or Name" />
                      </children>
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="15.0" right="15.0" top="15.0" />
@@ -90,7 +90,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="productSearchTxt" maxWidth="1.7976931348623157E308" onInputMethodTextChanged="#productSearchTxtChanged" prefWidth="200.0" promptText="Search by Product ID or Name" />
+                        <TextField fx:id="productSearchTxt" maxWidth="1.7976931348623157E308" onKeyTyped="#productSearchKeyTyped" prefWidth="200.0" promptText="Search by Product ID or Name" />
                      </children>
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="15.0" right="15.0" top="15.0" />
@@ -137,6 +137,14 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </BorderPane.margin>
          <children>
+            <Label fx:id="searchErrorLabel" focusTraversable="false" textFill="RED">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="300.0" />
+               </HBox.margin>
+            </Label>
             <Button fx:id="exitButton" mnemonicParsing="false" onAction="#onActionExitApplication" prefHeight="30.0" prefWidth="60.0" text="Exit" />
          </children>
       </HBox>

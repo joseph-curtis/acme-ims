@@ -1,14 +1,12 @@
 package controller;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import model.Inventory;
 import model.Part;
@@ -22,7 +20,7 @@ import java.util.ResourceBundle;
 /**
  * The Controller class for the Main form.
  * @author Joseph Curtis
- * @version 2021.11.28
+ * @version 2021.12.06
  */
 
 public class MainController implements Initializable {
@@ -54,6 +52,9 @@ public class MainController implements Initializable {
 
     @FXML
     private Button exitButton;
+
+    @FXML
+    private Label searchErrorLabel;
 
     @FXML
     private TableView<Part> partsTable;
@@ -159,12 +160,51 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    void partSearchTxtChanged(InputMethodEvent event) {
-        // TODO implement button action
+    void partSearchKeyTyped(KeyEvent event) {
+        String query = partSearchTxt.getText().trim();
+
+        ObservableList<Part> partsFound = Inventory.lookupPart(query);
+
+        try {
+            int id = Integer.parseInt(query);
+            Part partIdMatch = Inventory.lookupPart(id);
+            if (partIdMatch != null)
+                partsFound.add(partIdMatch);
+        } catch (NumberFormatException exception) {
+            // ignore exception, do not add anything to list
+        }
+
+        partsTable.setItems(partsFound);
+
+        if (partsFound.size() == 0) {
+            searchErrorLabel.setText("No part found with Name or ID entered");
+        } else {
+            searchErrorLabel.setText("");
+        }
     }
 
     @FXML
-    void productSearchTxtChanged(InputMethodEvent event) {
-        // TODO implement button action
+    void productSearchKeyTyped(KeyEvent event) {
+        String query = productSearchTxt.getText().trim();
+
+        ObservableList<Product> productsFound = Inventory.lookupProduct(query);
+
+        try {
+            int id = Integer.parseInt(query);
+            Product productIdMatch = Inventory.lookupProduct(id);
+            if (productIdMatch != null)
+                productsFound.add(productIdMatch);
+        } catch (NumberFormatException exception) {
+            // ignore exception, do not add anything to list
+        }
+
+        productsTable.setItems(productsFound);
+
+        if (productsFound.size() == 0) {
+            searchErrorLabel.setText("No product found with Name or ID entered");
+        } else {
+            searchErrorLabel.setText("");
+        }
     }
+
 }
