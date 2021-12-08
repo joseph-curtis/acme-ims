@@ -11,11 +11,12 @@ import model.Part;
 import util.GuiUtil;
 
 import java.io.IOException;
+import java.util.InputMismatchException;
 
 /**
  * The Controller class for the Add and Modify Part forms.
  * @author Joseph Curtis
- * @version 2021.11.28
+ * @version 2021.12.07
  */
 
 public class PartController {
@@ -126,30 +127,50 @@ public class PartController {
     void onActionSave(ActionEvent event) throws IOException {
         Part savedPart;
 
-        int id = acquireId();
-        String name = nameTxt.getText();
-        double price = Double.parseDouble(priceTxt.getText());
-        int stock = Integer.parseInt(stockTxt.getText());
-        int min = Integer.parseInt(minTxt.getText());
-        int max = Integer.parseInt(maxTxt.getText());
+        try {
+            if (nameTxt.getText().isBlank()
+                    || priceTxt.getText().isBlank()
+                    || stockTxt.getText().isBlank()
+                    || minTxt.getText().isBlank()
+                    || maxTxt.getText().isBlank() )
+                throw new IOException("Fields Cannot be Blank");
 
-        if (inHouseRadioBtn.isSelected()) {
-            int machineId = Integer.parseInt(sourceTxt.getText());
-            savedPart = new InHouse(id, name, price, stock, min, max, machineId);
-        } else if (outsourcedRadioBtn.isSelected()) {
-            String companyName = sourceTxt.getText();
-            savedPart = new Outsourced(id, name, price, stock, min, max, companyName);
-        } else {
-            throw new IOException("No Radio Button selected!");
+            int id = acquireId();
+            String name = nameTxt.getText();
+
+            int stock = GuiUtil.parseIntAndHandleException(stockTxt, "Inv");
+            int min = GuiUtil.parseIntAndHandleException(minTxt, "Min");
+            int max = GuiUtil.parseIntAndHandleException(maxTxt, "Max");
+            double price = GuiUtil.parseDoubleAndHandleException(priceTxt, "Price/Cost");
+
+            if (inHouseRadioBtn.isSelected()) {
+//                int machineId = Integer.parseInt(sourceTxt.getText());
+                int machineId = GuiUtil.parseIntAndHandleException(sourceTxt, "Machine ID");
+                savedPart = new InHouse(id, name, price, stock, min, max, machineId);
+            } else if (outsourcedRadioBtn.isSelected()) {
+                String companyName = sourceTxt.getText();
+                savedPart = new Outsourced(id, name, price, stock, min, max, companyName);
+            } else {
+                throw new IOException("No Radio Button selected!");
+            }
+
+            if (existingPart == null) {
+                Inventory.addPart(savedPart);
+            } else {
+                Inventory.updatePart(id, savedPart);
+            }
+
+            GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
         }
-
-        if (existingPart == null) {
-            Inventory.addPart(savedPart);
-        } else {
-            Inventory.updatePart(id, savedPart);
+        catch(IOException exception) {
+            Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
+            blankTextWarning.setHeaderText(exception.getMessage());
+            blankTextWarning.setContentText("Please enter data in each field.");
+            blankTextWarning.showAndWait();
         }
-
-        GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        catch(InputMismatchException exception) {
+            // Do nothing and return to Add/Modify Parts screen
+        }
     }
 
 }

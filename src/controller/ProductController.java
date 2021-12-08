@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 /**
  * The Controller class for the Add and Modify Product forms.
  * @author Joseph Curtis
- * @version 2021.11.28
+ * @version 2021.12.07
  */
 
 public class ProductController implements Initializable {
@@ -166,7 +166,15 @@ public class ProductController implements Initializable {
 
     @FXML
     void onActionRemovePart(ActionEvent event) {
-        assocPartsList.remove((Part)assocPartsTableView.getSelectionModel().getSelectedItem());
+        Part removedPart = assocPartsTableView.getSelectionModel().getSelectedItem();
+        if (removedPart == null)
+            return;     // no selection means nothing to delete or confirm
+
+        GuiUtil.confirmDeletion(
+                "Remove Part Association"
+                , "Please Confirm Removal"
+                , "Remove associated Part \"" + removedPart.getName() + "\" ?"
+                , ()-> assocPartsList.remove((Part)removedPart));
     }
 
     @FXML

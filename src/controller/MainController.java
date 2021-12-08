@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 /**
  * The Controller class for the Main form.
  * @author Joseph Curtis
- * @version 2021.12.06
+ * @version 2021.12.07
  */
 
 public class MainController implements Initializable {
@@ -124,14 +124,38 @@ public class MainController implements Initializable {
 
     @FXML
     void onActionDeletePart(ActionEvent event) {
-        Inventory.deletePart((Part)partsTable.getSelectionModel().getSelectedItem());
-        // TODO implement confirm dialog
+        Part deletedPart = partsTable.getSelectionModel().getSelectedItem();
+        if (deletedPart == null)
+            return;     // no selection means nothing to delete or confirm
+
+        GuiUtil.confirmDeletion(
+                "Delete Part Confirmation"
+                , "Delete Selected \"" + deletedPart.getName() + "\" ?"
+                , "Part will be deleted.  This CANNOT be undone!"
+                , ()-> Inventory.deletePart((Part)deletedPart));
     }
 
     @FXML
     void onActionDeleteProduct(ActionEvent event) {
-        Inventory.deleteProduct((Product)productsTable.getSelectionModel().getSelectedItem());
-        // TODO implement confirm dialog
+        Product deletedProduct = productsTable.getSelectionModel().getSelectedItem();
+        if (deletedProduct == null)
+            return;         // no selection means nothing to delete or confirm
+
+        if (deletedProduct.getAllAssociatedParts().isEmpty()) {
+            GuiUtil.confirmDeletion(
+                    "Delete Product Confirmation"
+                    , "Delete Selected \"" + deletedProduct.getName() + "\" ?"
+                    , "Product will be deleted.  This CANNOT be undone!"
+                    , ()-> Inventory.deleteProduct((Product)deletedProduct));
+        }
+        else {
+            // products with associated parts cannot be deleted
+            Alert warningDelete = new Alert(Alert.AlertType.WARNING);
+            warningDelete.setHeaderText("Unable to Delete \"" + deletedProduct.getName() + "\"");
+            warningDelete.setContentText("This Product has " + deletedProduct.getAllAssociatedParts().size()
+                    + " associated Parts.\nPlease remove all associated parts first.");
+            warningDelete.showAndWait();
+        }
     }
 
     @FXML
