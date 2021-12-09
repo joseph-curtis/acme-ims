@@ -43,7 +43,7 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" spacing="25.0" BorderPane.alignment="CENTER_RIGHT">
          <children>
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onActionSave" prefHeight="30.0" prefWidth="55.0" text="Save" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onActionSavePart" prefHeight="30.0" prefWidth="55.0" text="Save" />
             <Button fx:id="cancelButton" accessibleHelp="Cancel Add Part" accessibleText="Cancel Add Part" cancelButton="true" mnemonicParsing="false" onAction="#onActionCancel" prefHeight="30.0" prefWidth="55.0" text="Cancel" />
          </children>
          <BorderPane.margin>

@@ -3,14 +3,12 @@ package model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-
 /**
  * The Inventory class for the data layer. Note that there is only one
  * inventory, so all properties and methods are static.
  * This is where static data stored for parts & products resides
  * @author Joseph Curtis
- * @version 2021.11.22
+ * @version 2021.12.08
  */
 
 public class Inventory {
@@ -19,14 +17,13 @@ public class Inventory {
     private static int partsIdCounter = 0;
     private static int productsIdCounter = 0;
 
-    /**
-     * Static Initializer to create test data.
-     */
+    //  Static Initializer to create test data.
     static {
         addTestData();
     }
 
-    // Helper function to implement adding test data
+    /** Helper function to implement adding test data
+     */
     private static void addTestData() {
         InHouse widget = new InHouse(getNewPartId(), "Widget", 7.77, 7, 1, 70, 195);
         InHouse gadget = new InHouse(getNewPartId(), "Gadget", 12.50, 12, 1, 144, 482);
@@ -40,19 +37,10 @@ public class Inventory {
         addPart(gizmo);
         addProduct(macguffin);
         addProduct(macdonwald);
-
-//        Outsourced edited = new Outsourced(widget.getId(), "EDITED", 9000, 9000, 9000, 9000, "THIS WAS CHANGED");
-//        updatePart(edited.getId(), edited);
-//
-//        deletePart(widget);
-//
-//        ObservableList<Product> copiedList = lookupProduct("mAc");
-//        for (Product product : copiedList) {
-//            addProduct(product);
-//        }
     }
 
     /**
+     * Add a new part to allParts
      * @param newPart the part to add to inventory
      */
     public static void addPart(Part newPart) {
@@ -60,6 +48,7 @@ public class Inventory {
     }
 
     /**
+     * Add a new product to allProducts
      * @param newProduct the product to add to inventory
      */
     public static void addProduct(Product newProduct) {
@@ -67,8 +56,9 @@ public class Inventory {
     }
 
     /**
-     * @param partId the id of part to lookup
-     * @return the part with associated id
+     * Search allParts for one with matching id
+     * @param partId the id of part to search for
+     * @return the part with matching id
      */
     public static Part lookupPart(int partId) {
         for (Part part : allParts) {
@@ -80,8 +70,9 @@ public class Inventory {
     }
 
     /**
-     * @param productId the id of product to lookup
-     * @return the product with associated id
+     * Search allProducts for one with matching id
+     * @param productId the id of the product to search for
+     * @return the product with matching id
      */
     public static Product lookupProduct(int productId) {
         for (Product product : allProducts) {
@@ -93,8 +84,9 @@ public class Inventory {
     }
 
     /**
-     * @param partName name of part to lookup
-     * @return a list of parts whose Name contains partName parameter
+     * Get filtered list where name contains search parameter
+     * @param partName name of part to search
+     * @return an ObservableList of parts filtered to match
      */
     public static ObservableList<Part> lookupPart(String partName) {
         ObservableList<Part> partsFoundList = FXCollections.observableArrayList();
@@ -109,8 +101,9 @@ public class Inventory {
     }
 
     /**
-     * @param productName name of product to lookup
-     * @return a list of products whose Name contains productsName parameter
+     * Get filtered list where name contains search parameter
+     * @param productName name of product to search
+     * @return an ObservableList of products filtered to match
      */
     public static ObservableList<Product> lookupProduct(String productName) {
         ObservableList<Product> productsFoundList = FXCollections.observableArrayList();
@@ -125,24 +118,31 @@ public class Inventory {
     }
 
     /**
-     * @param index the ID of the Part to edit
-     * @param selectedPart Part object to replace existing Part with same ID
+     * Replaces an existing Part with a modified one
+     * @param index the index in allParts to target
+     * @param selectedPart Part to replace existing object in allParts
      */
     public static void updatePart(int index, Part selectedPart) {
+        if (index >= 0)
+            allParts.set(index, selectedPart);
+
+        /*  // ForEach method does not need index parameter
         int i = 0;  // index for allParts array list
+        int newPartID = selectedPart.getId();
 
         for (Part part : allParts) {
-            if (part.getId() == index) {
+            if (part.getId() == newPartID) {
                 allParts.set(i, selectedPart);
                 return;
             }
             i++;    // go to next record
         }
-        //TODO update all associated parts as well?
+        */
     }
 
     /**
-     * @param index the observableArrayList index in allProducts to target
+     * Replaces an existing Product with a modified one
+     * @param index the index in allProducts to target
      * @param newProduct Product to replace existing object in allProducts
      */
     public static void updateProduct(int index, Product newProduct) {
@@ -151,19 +151,20 @@ public class Inventory {
 
         /*  // ForEach method does not need index parameter
         int i = 0;  // index for allProducts array list
-        int partID = newProduct.getId();
+        int newProductID = newProduct.getId();
 
         for (Product product : allProducts) {
-            if (product.getId() == partID) {
+            if (product.getId() == newProductID) {
                 allProducts.set(i, newProduct);
                 return;
             }
             i++;    // go to next record
         }
-         */
+        */
     }
 
     /**
+     * Remove Part from Inventory
      * @param selectedPart part to remove from inventory
      * @return true if delete was successful
      */
@@ -172,6 +173,7 @@ public class Inventory {
     }
 
     /**
+     * Remove Product from Inventory
      * @param selectedProduct product to remove from inventory
      * @return true if delete was successful
      */
@@ -195,7 +197,7 @@ public class Inventory {
 
     /**
      * increases partsIdCounter, ensuring no conflicting parts ID in inventory
-     * @return a unique Parts ID
+     * @return a unique Part ID
      */
     public static int getNewPartId() {
         return ++partsIdCounter;

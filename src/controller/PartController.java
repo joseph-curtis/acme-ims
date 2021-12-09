@@ -11,12 +11,12 @@ import model.Part;
 import util.GuiUtil;
 
 import java.io.IOException;
-import java.util.InputMismatchException;
+import java.io.InvalidObjectException;
 
 /**
  * The Controller class for the Add and Modify Part forms.
  * @author Joseph Curtis
- * @version 2021.12.07
+ * @version 2021.12.08
  */
 
 public class PartController {
@@ -29,6 +29,7 @@ public class PartController {
      */
     public void setExistingPart(Part oldPart) {
         existingPart = oldPart;
+
         currentFunctionLabel.setText("Modify Part");
 
         idTxt.setText(String.valueOf(oldPart.getId()));
@@ -48,8 +49,8 @@ public class PartController {
     }
 
     /**
-     * gets existing ID or new unique ID if part is new
-     * @return an ID unique to Inventory
+     * gets existing ID or new unique ID if Part is new
+     * @return a Part ID unique to Inventory
      */
     private int acquireId() {
         if (existingPart == null) {
@@ -124,7 +125,7 @@ public class PartController {
     }
 
     @FXML
-    void onActionSave(ActionEvent event) throws IOException {
+    void onActionSavePart(ActionEvent event) {
         Part savedPart;
 
         try {
@@ -144,7 +145,6 @@ public class PartController {
             double price = GuiUtil.parseDoubleAndHandleException(priceTxt, "Price/Cost");
 
             if (inHouseRadioBtn.isSelected()) {
-//                int machineId = Integer.parseInt(sourceTxt.getText());
                 int machineId = GuiUtil.parseIntAndHandleException(sourceTxt, "Machine ID");
                 savedPart = new InHouse(id, name, price, stock, min, max, machineId);
             } else if (outsourcedRadioBtn.isSelected()) {
@@ -155,12 +155,25 @@ public class PartController {
             }
 
             if (existingPart == null) {
+                // Save new added part:
                 Inventory.addPart(savedPart);
             } else {
-                Inventory.updatePart(id, savedPart);
+                int index = Inventory.getAllParts().indexOf(existingPart);
+
+                if (index < 0)
+                    throw new InvalidObjectException("Existing Part to modify no longer exists in Inventory!");
+                else
+                    Inventory.updatePart(index, savedPart);
+                    // (saves modified part)
             }
 
             GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        }
+        catch(InvalidObjectException exception) {
+            Alert inventoryError = new Alert(Alert.AlertType.ERROR);
+            inventoryError.setHeaderText("Error in Inventory");
+            inventoryError.setContentText(exception.getMessage());
+            inventoryError.showAndWait();
         }
         catch(IOException exception) {
             Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
@@ -168,7 +181,7 @@ public class PartController {
             blankTextWarning.setContentText("Please enter data in each field.");
             blankTextWarning.showAndWait();
         }
-        catch(InputMismatchException exception) {
+        catch(IllegalArgumentException exception) {
             // Do nothing and return to Add/Modify Parts screen
         }
     }
