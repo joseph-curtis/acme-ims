@@ -5,17 +5,16 @@ import controller.ProductController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
 import model.Part;
 import model.Product;
 
 import java.io.IOException;
-import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
@@ -87,40 +86,64 @@ public class GuiUtil {
             success = lambda.getAsBoolean();
 
         if (!success) {
-            Alert deleteError = new Alert(Alert.AlertType.ERROR);
-            deleteError.setHeaderText("Error in Inventory!");
-            deleteError.setContentText("Unable to remove selected item!");
-            deleteError.showAndWait();
+            handleInvObjNotFoundException(
+                    new InvObjNotFoundException("Unable to remove selected item!"));
         }
     }
 
-    public static int parseIntAndHandleException(TextField field,
-                                                 String fieldName) throws InputMismatchException {
+    public static int parseIntAndHandleException(TextField textField,
+                                                 String fieldName) throws InvalidInputException {
         try {
-            return Integer.parseInt(field.getText());
+            return Integer.parseInt(textField.getText().trim());
         }
         catch (NumberFormatException exception) {
             Alert inputError = new Alert(Alert.AlertType.ERROR);
-            inputError.setHeaderText("\"" + field.getText() + "\" is not an Integer!");
+            inputError.setHeaderText("\"" + textField.getText() + "\" is not an Integer!");
             inputError.setContentText("Please enter only numeric (integer) data in the "
-                    + "field: \"" + fieldName + "\"");
+                    + "field: \n\"" + fieldName + "\"");
             inputError.showAndWait();
-            throw new IllegalArgumentException();
+
+            throw new InvalidInputException("Attempt to parse integer failed", textField, fieldName);
         }
     }
 
-    public static double parseDoubleAndHandleException(TextField field,
-                                                       String fieldName) throws InputMismatchException {
+    public static double parseDoubleAndHandleException(TextField textField,
+                                                       String fieldName) throws InvalidInputException {
         try {
-            return Double.parseDouble(field.getText());
+            return Double.parseDouble(textField.getText().trim());
         }
         catch (NumberFormatException exception) {
             Alert inputError = new Alert(Alert.AlertType.ERROR);
-            inputError.setHeaderText("\"" + field.getText() + "\" is not a Decimal!");
+            inputError.setHeaderText("\"" + textField.getText() + "\" is not a Decimal!");
             inputError.setContentText("Please enter only numeric (decimal) data in the "
-                    + "field: \"" + fieldName + "\"");
+                    + "field: \n\"" + fieldName + "\"");
             inputError.showAndWait();
-            throw new IllegalArgumentException();
+
+            throw new InvalidInputException("Attempt to parse double failed", textField, fieldName);
         }
     }
+
+    public static void handleInvObjNotFoundException(InvObjNotFoundException exception) {
+        Alert inventoryError = new Alert(Alert.AlertType.ERROR);
+        inventoryError.setHeaderText("Error in Inventory");
+        inventoryError.setContentText(exception.getMessage());
+        inventoryError.showAndWait();
+    }
+
+    public static void handleBlankInputException(BlankInputException exception) {
+        Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
+        blankTextWarning.setHeaderText(exception.getMessage());
+        blankTextWarning.setContentText("Please enter data in each field.");
+        blankTextWarning.showAndWait();
+    }
+
+    public static void handleLogicalError(String content) throws InvalidInputException {
+        Alert deleteError = new Alert(Alert.AlertType.WARNING);
+        deleteError.setHeaderText("Input Validation");
+        deleteError.setContentText(content);
+        deleteError.showAndWait();
+
+        throw new InvalidInputException("Logical error check:\n" + content);
+    }
+
 }

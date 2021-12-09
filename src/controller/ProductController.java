@@ -12,10 +12,12 @@ import javafx.scene.layout.BorderPane;
 import model.Inventory;
 import model.Part;
 import model.Product;
+import util.BlankInputException;
 import util.GuiUtil;
+import util.InvObjNotFoundException;
+import util.InvalidInputException;
 
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -180,8 +182,8 @@ public class ProductController implements Initializable {
         if (assocPart != null && !assocPartsList.contains(assocPart))
             assocPartsList.add(assocPart);
 
-        // refresh all TableViews:
-        initialize(null, null);
+        // refresh associated parts TableView:
+        assocPartsTableView.setItems(assocPartsList);
     }
 
     @FXML
@@ -196,60 +198,66 @@ public class ProductController implements Initializable {
                 "Remove associated Part \"" + removedPart.getName() + "\" ?" ,
                 ()-> assocPartsList.remove((Part)removedPart));
 
-        // refresh all TableViews:
-        initialize(null, null);
+        // refresh associated parts TableView:
+        assocPartsTableView.setItems(assocPartsList);
     }
 
     @FXML
-    void onActionSaveProduct(ActionEvent event) {
+    void onActionSaveProduct(ActionEvent event) throws IOException {
         try {
             if (nameTxt.getText().isBlank()
                     || priceTxt.getText().isBlank()
                     || stockTxt.getText().isBlank()
                     || minTxt.getText().isBlank()
                     || maxTxt.getText().isBlank() )
-                throw new IOException("Fields Cannot be Blank");
+                throw new BlankInputException("Fields Cannot be Blank");
 
+            // Get input from fields:
             int id = acquireId();
             String name = nameTxt.getText();
-
             int stock = GuiUtil.parseIntAndHandleException(stockTxt, "Inv");
             int min = GuiUtil.parseIntAndHandleException(minTxt, "Min");
             int max = GuiUtil.parseIntAndHandleException(maxTxt, "Max");
             double price = GuiUtil.parseDoubleAndHandleException(priceTxt, "Price");
 
+            // validate input:
+            if (min < 0 || max < 0 || stock < 0)
+                GuiUtil.handleLogicalError("Min, Max, and Inv cannot be less than zero!");
+            if (price < 0)
+                GuiUtil.handleLogicalError("Price cannot be less than 0.00 !");
+            if (max < min)
+                GuiUtil.handleLogicalError("Min should be less than Max");
+            if (stock < min || stock > max)
+                GuiUtil.handleLogicalError("Inv should be between Min and Max");
+
+            // create Product to save:
             Product savedProduct = new Product(id, name, price, stock, min, max);
             saveAssociatedParts(savedProduct);        // save list of associated Parts
 
+            // update Inventory with Product (add or modify):
             if (existingProduct == null) {
                 // Save new added product:
                 Inventory.addProduct(savedProduct);
-            }
-            else {
+            } else {
                 int index = Inventory.getAllProducts().indexOf(existingProduct);
 
                 if (index < 0)
-                    throw new InvalidObjectException("Existing Product to modify no longer exists in Inventory!");
+                    throw new InvObjNotFoundException("Existing Product to modify no longer exists in Inventory!");
                 else
                     Inventory.updateProduct(index, savedProduct);
                     // (saves modified product)
             }
 
+            // go back to the Main screen:
             GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
         }
-        catch(InvalidObjectException exception) {
-            Alert inventoryError = new Alert(Alert.AlertType.ERROR);
-            inventoryError.setHeaderText("Error in Inventory");
-            inventoryError.setContentText(exception.getMessage());
-            inventoryError.showAndWait();
+        catch(InvObjNotFoundException exception) {
+            GuiUtil.handleInvObjNotFoundException(exception);
         }
-        catch(IOException exception) {
-            Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
-            blankTextWarning.setHeaderText(exception.getMessage());
-            blankTextWarning.setContentText("Please enter data in each field.");
-            blankTextWarning.showAndWait();
+        catch(BlankInputException exception) {
+            GuiUtil.handleBlankInputException(exception);
         }
-        catch(IllegalArgumentException exception) {
+        catch(InvalidInputException exception) {
             // Do nothing and return to Add/Modify Products screen
         }
     }

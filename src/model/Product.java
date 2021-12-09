@@ -3,8 +3,6 @@ package model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-
 /**
  * A finished Product with associated parts
  * @author Joseph Curtis
@@ -30,22 +28,6 @@ public class Product {
         this.stock = stock;
         this.min = min;
         this.max = max;
-    }
-
-    /**
-     * Used to debug passing by value
-     * @param copiedProduct old product to copy values from
-     */
-    @Deprecated
-    public Product(Product copiedProduct) {
-        this.id = copiedProduct.getId();
-        this.name = copiedProduct.getName();
-        this.price = copiedProduct.getPrice();
-        this.stock = copiedProduct.getStock();
-        this.min = copiedProduct.getMin();
-        this.max = copiedProduct.getMax();
-        associatedParts = FXCollections.observableArrayList();
-        associatedParts.addAll(copiedProduct.getAllAssociatedParts());
     }
 
     /**

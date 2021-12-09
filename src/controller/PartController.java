@@ -8,15 +8,17 @@ import model.InHouse;
 import model.Inventory;
 import model.Outsourced;
 import model.Part;
+import util.BlankInputException;
 import util.GuiUtil;
+import util.InvObjNotFoundException;
+import util.InvalidInputException;
 
 import java.io.IOException;
-import java.io.InvalidObjectException;
 
 /**
  * The Controller class for the Add and Modify Part forms.
  * @author Joseph Curtis
- * @version 2021.12.08
+ * @version 2021.12.09
  */
 
 public class PartController {
@@ -125,7 +127,7 @@ public class PartController {
     }
 
     @FXML
-    void onActionSavePart(ActionEvent event) {
+    void onActionSavePart(ActionEvent event) throws IOException {
         Part savedPart;
 
         try {
@@ -134,16 +136,27 @@ public class PartController {
                     || stockTxt.getText().isBlank()
                     || minTxt.getText().isBlank()
                     || maxTxt.getText().isBlank() )
-                throw new IOException("Fields Cannot be Blank");
+                throw new BlankInputException("Fields Cannot be Blank");
 
+            // Get input from fields:
             int id = acquireId();
             String name = nameTxt.getText();
-
             int stock = GuiUtil.parseIntAndHandleException(stockTxt, "Inv");
             int min = GuiUtil.parseIntAndHandleException(minTxt, "Min");
             int max = GuiUtil.parseIntAndHandleException(maxTxt, "Max");
             double price = GuiUtil.parseDoubleAndHandleException(priceTxt, "Price/Cost");
 
+            // validate input:
+            if (min < 0 || max < 0 || stock < 0)
+                GuiUtil.handleLogicalError("Min, Max, and Inv cannot be less than zero!");
+            if (price < 0)
+                GuiUtil.handleLogicalError("Price/Cost cannot be less than 0.00 !");
+            if (max < min)
+                GuiUtil.handleLogicalError("Min should be less than Max");
+            if (stock < min || stock > max)
+                GuiUtil.handleLogicalError("Inv should be between Min and Max");
+
+            // create Part to save:
             if (inHouseRadioBtn.isSelected()) {
                 int machineId = GuiUtil.parseIntAndHandleException(sourceTxt, "Machine ID");
                 savedPart = new InHouse(id, name, price, stock, min, max, machineId);
@@ -151,9 +164,10 @@ public class PartController {
                 String companyName = sourceTxt.getText();
                 savedPart = new Outsourced(id, name, price, stock, min, max, companyName);
             } else {
-                throw new IOException("No Radio Button selected!");
+                throw new BlankInputException("No Radio Button selected!");
             }
 
+            // update Inventory with Part (add or modify):
             if (existingPart == null) {
                 // Save new added part:
                 Inventory.addPart(savedPart);
@@ -161,27 +175,22 @@ public class PartController {
                 int index = Inventory.getAllParts().indexOf(existingPart);
 
                 if (index < 0)
-                    throw new InvalidObjectException("Existing Part to modify no longer exists in Inventory!");
+                    throw new InvObjNotFoundException("Existing Part to modify no longer exists in Inventory!");
                 else
                     Inventory.updatePart(index, savedPart);
                     // (saves modified part)
             }
 
+            // go back to the Main screen:
             GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
         }
-        catch(InvalidObjectException exception) {
-            Alert inventoryError = new Alert(Alert.AlertType.ERROR);
-            inventoryError.setHeaderText("Error in Inventory");
-            inventoryError.setContentText(exception.getMessage());
-            inventoryError.showAndWait();
+        catch(InvObjNotFoundException exception) {
+            GuiUtil.handleInvObjNotFoundException(exception);
         }
-        catch(IOException exception) {
-            Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
-            blankTextWarning.setHeaderText(exception.getMessage());
-            blankTextWarning.setContentText("Please enter data in each field.");
-            blankTextWarning.showAndWait();
+        catch(BlankInputException exception) {
+            GuiUtil.handleBlankInputException(exception);
         }
-        catch(IllegalArgumentException exception) {
+        catch(InvalidInputException exception) {
             // Do nothing and return to Add/Modify Parts screen
         }
     }
