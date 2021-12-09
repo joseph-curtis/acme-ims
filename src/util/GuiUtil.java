@@ -105,7 +105,7 @@ public class GuiUtil {
             inputError.setContentText("Please enter only numeric (integer) data in the "
                     + "field: \"" + fieldName + "\"");
             inputError.showAndWait();
-            throw new InputMismatchException();
+            throw new IllegalArgumentException();
         }
     }
 
@@ -120,7 +120,7 @@ public class GuiUtil {
             inputError.setContentText("Please enter only numeric (decimal) data in the "
                     + "field: \"" + fieldName + "\"");
             inputError.showAndWait();
-            throw new InputMismatchException();
+            throw new IllegalArgumentException();
         }
     }
 }

@@ -9,17 +9,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import model.*;
+import model.Inventory;
+import model.Part;
+import model.Product;
 import util.GuiUtil;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
  * The Controller class for the Add and Modify Product forms.
  * @author Joseph Curtis
- * @version 2021.12.07
+ * @version 2021.12.08
  */
 
 public class ProductController implements Initializable {
@@ -53,7 +56,8 @@ public class ProductController implements Initializable {
      */
     public void setExistingProduct(Product oldProduct) {
         existingProduct = oldProduct;
-        assocPartsList = oldProduct.getAllAssociatedParts();
+        assocPartsList.addAll(oldProduct.getAllAssociatedParts());
+
         currentFunctionLabel.setText("Modify Product");
 
         idTxt.setText(String.valueOf(oldProduct.getId()));
@@ -68,6 +72,18 @@ public class ProductController implements Initializable {
         assocPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         assocPartPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
         assocPartStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+    }
+
+    /**
+     * gets existing ID or new unique ID if Product is new
+     * @return a Product ID unique to Inventory
+     */
+    private int acquireId() {
+        if (existingProduct == null) {
+            return Inventory.getNewProductId();  // get new ID for new Product
+        } else {
+            return existingProduct.getId();          // get ID of existing Product to edit
+        }
     }
 
     /**
@@ -160,8 +176,12 @@ public class ProductController implements Initializable {
     @FXML
     void onActionAddPart(ActionEvent event) {
         Part assocPart = (Part)invPartsTableView.getSelectionModel().getSelectedItem();
-        if (!assocPartsList.contains(assocPart) && assocPart != null)
+
+        if (assocPart != null && !assocPartsList.contains(assocPart))
             assocPartsList.add(assocPart);
+
+        // refresh all TableViews:
+        initialize(null, null);
     }
 
     @FXML
@@ -171,40 +191,67 @@ public class ProductController implements Initializable {
             return;     // no selection means nothing to delete or confirm
 
         GuiUtil.confirmDeletion(
-                "Remove Part Association"
-                , "Please Confirm Removal"
-                , "Remove associated Part \"" + removedPart.getName() + "\" ?"
-                , ()-> assocPartsList.remove((Part)removedPart));
+                "Remove Part Association" ,
+                "Please Confirm Removal" ,
+                "Remove associated Part \"" + removedPart.getName() + "\" ?" ,
+                ()-> assocPartsList.remove((Part)removedPart));
+
+        // refresh all TableViews:
+        initialize(null, null);
     }
 
     @FXML
-    void onActionSaveProduct(ActionEvent event) throws IOException {
-        int id;
-        String name = nameTxt.getText();
-        double price = Double.parseDouble(priceTxt.getText());
-        int stock = Integer.parseInt(stockTxt.getText());
-        int min = Integer.parseInt(minTxt.getText());
-        int max = Integer.parseInt(maxTxt.getText());
+    void onActionSaveProduct(ActionEvent event) {
+        try {
+            if (nameTxt.getText().isBlank()
+                    || priceTxt.getText().isBlank()
+                    || stockTxt.getText().isBlank()
+                    || minTxt.getText().isBlank()
+                    || maxTxt.getText().isBlank() )
+                throw new IOException("Fields Cannot be Blank");
 
-        if (existingProduct == null) {
-            id = Inventory.getNewProductId();       // get new ID for new product
-            Product newProduct = new Product(id, name, price, stock, min, max);
-            saveAssociatedParts(newProduct);        // save list of associated Parts
+            int id = acquireId();
+            String name = nameTxt.getText();
 
-            Inventory.addProduct(newProduct);
-        } else {
-            id = existingProduct.getId();           // get ID of existing product to edit
-            Product modifiedProduct = new Product(id, name, price, stock, min, max);
-            saveAssociatedParts(modifiedProduct);   // save list of associated Parts
+            int stock = GuiUtil.parseIntAndHandleException(stockTxt, "Inv");
+            int min = GuiUtil.parseIntAndHandleException(minTxt, "Min");
+            int max = GuiUtil.parseIntAndHandleException(maxTxt, "Max");
+            double price = GuiUtil.parseDoubleAndHandleException(priceTxt, "Price");
 
-            int index = Inventory.getAllProducts().indexOf(existingProduct);
-            if (index < 0)
-                throw new IOException("Existing product to modify does not exist in Inventory!");
-            else
-                Inventory.updateProduct(index, modifiedProduct);
+            Product savedProduct = new Product(id, name, price, stock, min, max);
+            saveAssociatedParts(savedProduct);        // save list of associated Parts
+
+            if (existingProduct == null) {
+                // Save new added product:
+                Inventory.addProduct(savedProduct);
+            }
+            else {
+                int index = Inventory.getAllProducts().indexOf(existingProduct);
+
+                if (index < 0)
+                    throw new InvalidObjectException("Existing Product to modify no longer exists in Inventory!");
+                else
+                    Inventory.updateProduct(index, savedProduct);
+                    // (saves modified product)
+            }
+
+            GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
         }
-
-        GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
+        catch(InvalidObjectException exception) {
+            Alert inventoryError = new Alert(Alert.AlertType.ERROR);
+            inventoryError.setHeaderText("Error in Inventory");
+            inventoryError.setContentText(exception.getMessage());
+            inventoryError.showAndWait();
+        }
+        catch(IOException exception) {
+            Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
+            blankTextWarning.setHeaderText(exception.getMessage());
+            blankTextWarning.setContentText("Please enter data in each field.");
+            blankTextWarning.showAndWait();
+        }
+        catch(IllegalArgumentException exception) {
+            // Do nothing and return to Add/Modify Products screen
+        }
     }
 
     @FXML

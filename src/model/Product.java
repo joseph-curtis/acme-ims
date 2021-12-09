@@ -33,6 +33,22 @@ public class Product {
     }
 
     /**
+     * Used to debug passing by value
+     * @param copiedProduct old product to copy values from
+     */
+    @Deprecated
+    public Product(Product copiedProduct) {
+        this.id = copiedProduct.getId();
+        this.name = copiedProduct.getName();
+        this.price = copiedProduct.getPrice();
+        this.stock = copiedProduct.getStock();
+        this.min = copiedProduct.getMin();
+        this.max = copiedProduct.getMax();
+        associatedParts = FXCollections.observableArrayList();
+        associatedParts.addAll(copiedProduct.getAllAssociatedParts());
+    }
+
+    /**
      * @param id the id to set
      */
     public void setId(int id) {

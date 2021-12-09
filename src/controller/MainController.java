@@ -129,10 +129,11 @@ public class MainController implements Initializable {
             return;     // no selection means nothing to delete or confirm
 
         GuiUtil.confirmDeletion(
-                "Delete Part Confirmation"
-                , "Delete Selected \"" + deletedPart.getName() + "\" ?"
-                , "Part will be deleted.  This CANNOT be undone!"
-                , ()-> Inventory.deletePart((Part)deletedPart));
+                "Delete Part Confirmation" ,
+                "Delete Selected \"" + deletedPart.getName() + "\" ?" ,
+                "Part will be deleted.  This CANNOT be undone!" ,
+                ()-> Inventory.deletePart((Part)deletedPart)
+        );
     }
 
     @FXML
@@ -143,10 +144,11 @@ public class MainController implements Initializable {
 
         if (deletedProduct.getAllAssociatedParts().isEmpty()) {
             GuiUtil.confirmDeletion(
-                    "Delete Product Confirmation"
-                    , "Delete Selected \"" + deletedProduct.getName() + "\" ?"
-                    , "Product will be deleted.  This CANNOT be undone!"
-                    , ()-> Inventory.deleteProduct((Product)deletedProduct));
+                    "Delete Product Confirmation" ,
+                    "Delete Selected \"" + deletedProduct.getName() + "\" ?" ,
+                    "Product will be deleted.  This CANNOT be undone!" ,
+                    ()-> Inventory.deleteProduct((Product)deletedProduct)
+            );
         }
         else {
             // products with associated parts cannot be deleted
@@ -169,8 +171,10 @@ public class MainController implements Initializable {
         if (selectedPart == null)
             return;     // if nothing is selected, do nothing
 
-        GuiUtil.changeScenePassPart(event, selectedPart,
-                "/view/PartForm.fxml", "Acme IMS - Modify Part");
+        GuiUtil.changeScenePassPart(event,
+                selectedPart,
+                "/view/PartForm.fxml",
+                "Acme IMS - Modify Part");
     }
 
     @FXML
@@ -179,8 +183,10 @@ public class MainController implements Initializable {
         if (selectedProduct == null)
             return;     // if nothing is selected, do nothing
 
-        GuiUtil.changeScenePassProduct(event, selectedProduct,
-                "/view/ProductForm.fxml", "Acme IMS - Modify Product");
+        GuiUtil.changeScenePassProduct(event,
+                selectedProduct,
+                "/view/ProductForm.fxml",
+                "Acme IMS - Modify Product");
     }
 
     @FXML
