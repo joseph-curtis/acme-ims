@@ -7,7 +7,7 @@
  * <br>
  * <h1>LOGICAL ERROR</h1>
  * <p>A logical error was found and corrected.
- * Please see: {@link controller.ProductController#saveAssociatedParts(model.Product)
- *  ProductController.saveAssociatedParts(Product)} method for details.</p>
+ * Please see: {@link controller.ProductController#setExistingProduct(model.Product)
+ *  ProductController.setExistingProduct(Product)} method for details.</p>
  */
 package controller;
