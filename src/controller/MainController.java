@@ -15,6 +15,7 @@ import util.GuiUtil;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -186,11 +187,19 @@ public class MainController implements Initializable {
 
     /**
      * Quits the application.
+     * <p>Displays a confirmation dialog before exiting.</p>
      * @param event the user generated event (a button being clicked) that caused this to execute
      */
     @FXML
     void onActionExitApplication(ActionEvent event) {
-        System.exit(0);
+        Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmExit.setTitle("Confirm Exit");
+        confirmExit.setHeaderText("Exit Application?");
+        confirmExit.setContentText("Are you sure you want to quit?");
+
+        Optional<ButtonType> result = confirmExit.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK)
+            System.exit(0);
     }
 
     /**
