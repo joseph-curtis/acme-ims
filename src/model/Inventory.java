@@ -4,9 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * The Inventory class for the data layer. Note that there is only one
- * inventory, so all properties and methods are static.
- * This is where the static data for all parts and products resides.
+ * The Inventory class for the data layer.
+ * <p>Note that there is only one inventory, so all properties and methods are
+ * static.  This is where the static data for all parts and products resides
+ * (in memory).</p>
+ * <p>Pre-populated test data can be added via a Static Initializer calling
+ * the {@link #addTestData()} method.</p>
  * @author Joseph Curtis
  * @version 2021.12.08
  */
@@ -17,15 +20,14 @@ public class Inventory {
     private static int partsIdCounter = 0;
     private static int productsIdCounter = 0;
 
-    /** Static Initializer to create test data.
-     * @requires Inventory#addTestData()
-     */
     static {
         addTestData();
     }
 
     /** Helper function to implement adding test data.
-     * Adds data to test while the IMS Application is in production.
+     * <p>Adds data to test while the IMS Application is in production.
+     * This relies on a Static Initializer to call this as soon as the
+     * Inventory class is initialized.</p>
      */
     protected static void addTestData() {
         InHouse widget = new InHouse(getNewPartId(), "Widget", 7.77, 7, 1, 70, 195);
