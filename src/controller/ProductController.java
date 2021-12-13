@@ -29,16 +29,24 @@ import java.util.ResourceBundle;
 
 public class ProductController implements Initializable {
 
-    private Product existingProduct;
-    private ObservableList<Part> assocPartsList = FXCollections.observableArrayList();
+    /**
+     * The product in Inventory to modify
+     */
+    protected Product existingProduct;
+    /**
+     * The list of parts associated with this product
+     */
+    protected final ObservableList<Part> assocPartsList = FXCollections.observableArrayList();
 
     /**
-     * Initializes the controller class -- sets up table views
-     * @param url (not used)
-     * @param resourceBundle (not used)
+     * Initializes the controller class, formatting the TableView columns
+     * @param location The location used to resolve relative paths for the root object,
+     *            or null if the location is not known.
+     * @param resources The resources used to localize the root object,
+     *                       or null if the root object was not localized.
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         invPartsTableView.setItems(Inventory.getAllParts());
         invPartIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         invPartNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -53,7 +61,33 @@ public class ProductController implements Initializable {
     }
 
     /**
-     * This sets all properties for edited item to populate to corresponding text fields
+     * This sets all properties for edited item to populate to corresponding text fields.
+     * <p>The existing product in Inventory is passed when changing the scene</p>
+     * <br>
+     * <h1>LOGICAL ERROR</h1>
+     * <p>When adding or deleting associated parts in the "Modify Product"
+     * screen, the existing Product's associatedParts list was instantly
+     * updated, even after the user clicked the Cancel button!  I found
+     * this was because I was passing the associatedParts by <em>reference</em>
+     * instead of passing by <em>value</em>.</p>
+     * <p>My previous method used: <br>
+     * <code>assocPartsList = oldProduct.getAllAssociatedParts();</code><br>
+     * So the local variable <code>assocPartsList</code> was a pointer to the product's private
+     * <code>associatedParts</code> List!  This is because the <code>private</code> modifier
+     * prevents the variable being overwritten, but the nature of Lists (and ObservableLists)
+     * allows items to be added or removed to the data structure.</p>
+     * <p>I fixed the issue by calling the <code>addAll</code> method from the List class:
+     * <br>assocPartsList.addAll(oldProduct.getAllAssociatedParts());<br>
+     * This creates a <em>copy</em> of the list instead (passed by <strong>value</strong>)
+     * so when the user clicks the "Cancel" button the original data integrity is intact.</p>
+     * <p>After this fix, the associated Parts TableView would not update after
+     * adding or removing associated parts. This was because the TableView was
+     * connected to a now outdated object.  I fixed by making a call to refresh the table:
+     * <br><code>assocPartsTableView.setItems(assocPartsList);</code><br>
+     * This ensured up-to-date data was populated in the TableView for accuracy.
+     * <br>See {@link #onActionAddPart(ActionEvent)} and {@link #onActionRemovePart(ActionEvent)}
+     * source code for details.</p>
+     * @see GuiUtil#changeScenePassProduct(ActionEvent, Product, String, String)
      * @param oldProduct existing product in inventory to be edited
      */
     public void setExistingProduct(Product oldProduct) {
@@ -78,9 +112,10 @@ public class ProductController implements Initializable {
 
     /**
      * gets existing ID or new unique ID if Product is new
+     * @see Inventory#getNewProductId()
      * @return a Product ID unique to Inventory
      */
-    private int acquireId() {
+    protected int acquireId() {
         if (existingProduct == null) {
             return Inventory.getNewProductId();  // get new ID for new Product
         } else {
@@ -89,14 +124,18 @@ public class ProductController implements Initializable {
     }
 
     /**
-     * add all associated parts to new or modified product
+     * Add all associated parts to new or modified product.
      * @param product the product to be added or modified
      */
-    private void saveAssociatedParts(Product product) {
+    protected void saveAssociatedParts(Product product) {
         for (Part part : assocPartsList) {
             product.addAssociatedPart(part);
         }
     }
+
+    /*------------------------------------------*/
+    //          Control declarations
+    /*__________________________________________*/
 
     @FXML
     private BorderPane rootBorderPane;
@@ -170,11 +209,27 @@ public class ProductController implements Initializable {
     @FXML
     private Label searchErrorLabel;
 
+    /*------------------------------------------*/
+    //          Event declarations
+    /*__________________________________________*/
+
+    /**
+     * Discard all changes, and go back to the "Main" screen.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
+    /**
+     * Adds the selected part to list of parts that is associated with this product.
+     * <p>Refreshes the associated parts TableView to reflect changes.</p>
+     * <p><b>See Also:</b><br>
+     * {@link #setExistingProduct(Product)} for the <strong>LOGICAL ERROR</strong> description and fix.</p>
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionAddPart(ActionEvent event) {
         Part assocPart = (Part)invPartsTableView.getSelectionModel().getSelectedItem();
@@ -186,6 +241,13 @@ public class ProductController implements Initializable {
         assocPartsTableView.setItems(assocPartsList);
     }
 
+    /**
+     * Deletes the selected part from associated parts list.
+     * <p>Refreshes the associated parts TableView to reflect changes.</p>
+     * <p><b>See Also:</b><br>
+     * {@link #setExistingProduct(Product)} for the <strong>LOGICAL ERROR</strong> description and fix.</p>
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionRemovePart(ActionEvent event) {
         Part removedPart = assocPartsTableView.getSelectionModel().getSelectedItem();
@@ -202,6 +264,12 @@ public class ProductController implements Initializable {
         assocPartsTableView.setItems(assocPartsList);
     }
 
+    /**
+     * Save this new or modified product.
+     * <p>Updates existing product, or adds new product to Inventory.</p>
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionSaveProduct(ActionEvent event) throws IOException {
         try {
@@ -262,6 +330,12 @@ public class ProductController implements Initializable {
         }
     }
 
+    /**
+     * Searches the Inventory for any part name or ID that at least partially matches the search string.
+     * <p>Each time the user presses a key this updates the listing of parts found in partsTable.</p>
+     * <p>If search string is null, all parts are displayed.</p>
+     * @param event user generated event (a key pressed) that caused this to execute
+     */
     @FXML
     void searchTxtKeyTyped(KeyEvent event) {
         String query = searchTxt.getText().trim();

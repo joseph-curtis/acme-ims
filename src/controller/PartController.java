@@ -23,10 +23,15 @@ import java.io.IOException;
 
 public class PartController {
 
-    private Part existingPart;
+    /**
+     * The part in Inventory to modify
+     */
+    protected Part existingPart;
 
     /**
-     * This sets all properties for edited item to populate to corresponding text fields
+     * This sets all properties for edited item to populate to corresponding text fields.
+     * <p>The existing part in Inventory is passed when changing the scene</p>
+     * @see GuiUtil#changeScenePassPart(ActionEvent, Part, String, String)
      * @param oldPart existing part in inventory to be edited
      */
     public void setExistingPart(Part oldPart) {
@@ -52,15 +57,20 @@ public class PartController {
 
     /**
      * gets existing ID or new unique ID if Part is new
+     * @see Inventory#getNewPartId()
      * @return a Part ID unique to Inventory
      */
-    private int acquireId() {
+    protected int acquireId() {
         if (existingPart == null) {
             return Inventory.getNewPartId();  // get new ID for new part
         } else {
             return existingPart.getId();          // get ID of existing part to edit
         }
     }
+
+    /*------------------------------------------*/
+    //          Control declarations
+    /*__________________________________________*/
 
     @FXML
     private BorderPane rootBorderPane;
@@ -107,11 +117,25 @@ public class PartController {
     @FXML
     private TextField stockTxt;
 
+    /*------------------------------------------*/
+    //          Event declarations
+    /*__________________________________________*/
+
+    /**
+     * Discard all changes, and go back to the "Main" screen.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionCancel(ActionEvent event) throws IOException {
         GuiUtil.changeScene(event, "/view/MainForm.fxml", "Acme IMS - Main");
     }
 
+    /**
+     * Change the part type to "In-House".
+     * <p>Source field becomes "Machine ID"</p>
+     * @param event the user generated event (a radio button being clicked) that caused this to execute
+     */
     @FXML
     void onActionInHouse(ActionEvent event) {
         inHouseRadioBtn.setSelected(true);
@@ -119,6 +143,11 @@ public class PartController {
         sourceTxt.setPromptText("In-House ID");
     }
 
+    /**
+     * Change the part type to "Outsourced".
+     * <p>Source field becomes "Company Name"</p>
+     * @param event the user generated event (a radio button being clicked) that caused this to execute
+     */
     @FXML
     void onActionOutsourced(ActionEvent event) {
         outsourcedRadioBtn.setSelected(true);
@@ -126,6 +155,12 @@ public class PartController {
         sourceTxt.setPromptText("Outsourced Company");
     }
 
+    /**
+     * Save this new or modified part.
+     * <p>Updates existing part, or adds new part to Inventory.</p>
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionSavePart(ActionEvent event) throws IOException {
         Part savedPart;

@@ -18,6 +18,18 @@ public class Product {
     private int min;
     private int max;
 
+    /**
+     * Constructor for creating a product with every field initialized.
+     * associatedParts is initialized, but left empty.
+     * Use addAssociatedPart method to populate the ObservableList :
+     * @see Product#addAssociatedPart(Part)
+     * @param id product id
+     * @param name name of product
+     * @param price price of product
+     * @param stock current inventory stock of product
+     * @param min minimum inventory stock allowed of product
+     * @param max maximum inventory stock allowed of product
+     */
     public Product(int id, String name, double price, int stock, int min, int max) {
         associatedParts = FXCollections.observableArrayList();
 //        another way to initialize an observable Array:
@@ -31,6 +43,10 @@ public class Product {
     }
 
     /**
+     * Change the product ID.
+     * <p><strong>WARNING:</strong><br>
+     * It is <em>HIGHLY</em> recommended to ensure you are using an ID that is <em><u>unique</u></em> to the inventory!</p>
+     * @see Inventory#getNewProductId()
      * @param id the id to set
      */
     public void setId(int id) {
@@ -38,6 +54,7 @@ public class Product {
     }
 
     /**
+     * Change the product name.
      * @param name the name to set
      */
     public void setName(String name) {
@@ -45,6 +62,7 @@ public class Product {
     }
 
     /**
+     * Change the product price.
      * @param price the price to set
      */
     public void setPrice(double price) {
@@ -52,6 +70,7 @@ public class Product {
     }
 
     /**
+     * Change the amount of stock in inventory.
      * @param stock the current inventory stock to set
      */
     public void setStock(int stock) {
@@ -59,6 +78,7 @@ public class Product {
     }
 
     /**
+     * Change the min product Inventory can hold.
      * @param min the minimum stock to set
      */
     public void setMin(int min) {
@@ -66,6 +86,7 @@ public class Product {
     }
 
     /**
+     * Change the max product Inventory can hold.
      * @param max the maximum stock to set
      */
     public void setMax(int max) {
@@ -73,6 +94,7 @@ public class Product {
     }
 
     /**
+     * Get product ID.
      * @return the id
      */
     public int getId() {
@@ -80,6 +102,7 @@ public class Product {
     }
 
     /**
+     * Get product name.
      * @return the name
      */
     public String getName() {
@@ -87,6 +110,7 @@ public class Product {
     }
 
     /**
+     * Get product price.
      * @return the price
      */
     public double getPrice() {
@@ -94,6 +118,7 @@ public class Product {
     }
 
     /**
+     * Get product stock.
      * @return the current stock in inventory
      */
     public int getStock() {
@@ -101,13 +126,15 @@ public class Product {
     }
 
     /**
-     * @return the minimum stock that must be set
+     * Get the min product Inventory can hold.
+     * @return the minimum stock that can be set
      */
     public int getMin() {
         return min;
     }
 
     /**
+     * Get the max product Inventory can hold.
      * @return the maximum stock that can be set
      */
     public int getMax() {
@@ -115,6 +142,7 @@ public class Product {
     }
 
     /**
+     * Adds a part that is associated with this product.
      * @param part the associated part to add
      */
     public void addAssociatedPart(Part part) {
@@ -122,6 +150,7 @@ public class Product {
     }
 
     /**
+     * Removes the selected associated part from the list.
      * @param selectedAssociatedPart part to remove
      * @return true if delete was successful
      */
@@ -130,7 +159,8 @@ public class Product {
     }
 
     /**
-     * @return the list of parts associated with product
+     * Gets the list of parts associated with this product.
+     * @return associated Parts list
      */
     public ObservableList<Part> getAllAssociatedParts() {
         return associatedParts;

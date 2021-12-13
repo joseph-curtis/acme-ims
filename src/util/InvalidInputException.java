@@ -2,6 +2,7 @@ package util;
 
 import javafx.scene.control.TextInputControl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,32 +15,56 @@ import java.util.List;
 
 public class InvalidInputException extends Exception {
 
-    TextInputControl field;
-    String fieldLabel;
-    List<TextInputControl> fieldsList;
+    private TextInputControl field;
+    private String fieldLabel;
+    private final List<TextInputControl> fieldsList = new ArrayList<TextInputControl>();
 
+    /**
+     * Constructs a new exception with a message detail.
+     * The input field in question is not specified.
+     * @param message  a detailed message saved for later.
+     */
     public InvalidInputException(String message) {
         super(message);
     }
 
+    /**
+     * Constructs a new exception with a message detail and
+     * the input field in question.
+     * @param message  a detailed message saved for later.
+     * @param field the input field that caused this exception.
+     */
     public InvalidInputException(String message, TextInputControl field) {
         super(message);
         this.field = field;
     }
 
+    /**
+     * Constructs a new exception with a message detail,
+     * the input field in question, and what the field is called in the program.
+     * @param message  a detailed message saved for later.
+     * @param field the input field that caused this exception.
+     * @param fieldLabel the labeled name the field goes by.
+     */
     public InvalidInputException(String message, TextInputControl field, String fieldLabel) {
         super(message);
         this.field = field;
         this.fieldLabel = fieldLabel;
     }
 
+    /**
+     * Constructs a new exception with a message detail and
+     * a list of the input fields in question.
+     * @param message  a detailed message saved for later.
+     * @param fieldsList the multiple input fields that caused this exception.
+     */
     public InvalidInputException(String message, List<TextInputControl> fieldsList) {
         super(message);
         this.fieldsList.addAll(fieldsList);
     }
 
-    /**
-     * @return A diagnostic string containing basic exception info
+    /** Returns a diagnostic description of this exception.
+     * @return A string containing basic exception info
      */
     @Override
     public String toString() {
@@ -57,17 +82,27 @@ public class InvalidInputException extends Exception {
     }
 
     /**
-     * @return the JavaFX textField that failed parsing
+     * Returns the input field in question
+     * @return the JavaFX textField that failed validation
      */
-    public TextInputControl getField() {
+    public final TextInputControl getField() {
         return field;
     }
 
     /**
-     * @return the name of input field in question
+     * Returns the name as a string of input field in question
+     * @return the name the input field is described by
      */
-    public String getFieldLabel() {
+    public final String getFieldLabel() {
         return fieldLabel;
+    }
+
+    /**
+     * Returns a list of fields that all failed input validation
+     * @return list of Textual input controls in question
+     */
+    public final List<TextInputControl> getFieldsList() {
+        return fieldsList;
     }
 
 }

@@ -27,11 +27,13 @@ public class MainController implements Initializable {
 
     /**
      * Initializes the controller class, formatting the TableView columns
-     * @param url (not used)
-     * @param resourceBundle (not used)
+     * @param location The location used to resolve relative paths for the root object,
+     *            or null if the location is not known.
+     * @param resources The resources used to localize the root object,
+     *                       or null if the root object was not localized.
      */
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         partsTable.setItems(Inventory.getAllParts());
         partIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         partNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -45,7 +47,9 @@ public class MainController implements Initializable {
         productStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
     }
 
-    // Control declarations
+    /*------------------------------------------*/
+    //          Control declarations
+    /*__________________________________________*/
 
     @FXML
     private BorderPane rootBorderPane;
@@ -110,18 +114,34 @@ public class MainController implements Initializable {
     @FXML
     private Button productsModifyButton;
 
-    // Event declarations
+    /*------------------------------------------*/
+    //          Event declarations
+    /*__________________________________________*/
 
+    /**
+     * Go to the "Add New Part" screen.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionAddPart(ActionEvent event) throws IOException {
         GuiUtil.changeScene(event, "/view/PartForm.fxml", "Acme IMS - Add Part");
     }
 
+    /**
+     * Go to the "Add New Product" screen.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionAddProduct(ActionEvent event) throws IOException {
         GuiUtil.changeScene(event, "/view/ProductForm.fxml", "Acme IMS - Add Product");
     }
 
+    /**
+     * Removes selected part from Inventory.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionDeletePart(ActionEvent event) {
         Part deletedPart = partsTable.getSelectionModel().getSelectedItem();
@@ -130,12 +150,16 @@ public class MainController implements Initializable {
 
         GuiUtil.confirmDeletion(
                 "Delete Part Confirmation" ,
-                "Delete Selected \"" + deletedPart.getName() + "\" ?" ,
+                "Delete Selected Part \"" + deletedPart.getName() + "\" ?" ,
                 "Part will be deleted.  This CANNOT be undone!" ,
                 ()-> Inventory.deletePart((Part)deletedPart)
         );
     }
 
+    /**
+     * Removes selected product from Inventory.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionDeleteProduct(ActionEvent event) {
         Product deletedProduct = productsTable.getSelectionModel().getSelectedItem();
@@ -145,7 +169,7 @@ public class MainController implements Initializable {
         if (deletedProduct.getAllAssociatedParts().isEmpty()) {
             GuiUtil.confirmDeletion(
                     "Delete Product Confirmation" ,
-                    "Delete Selected \"" + deletedProduct.getName() + "\" ?" ,
+                    "Delete Selected Product \"" + deletedProduct.getName() + "\" ?" ,
                     "Product will be deleted.  This CANNOT be undone!" ,
                     ()-> Inventory.deleteProduct((Product)deletedProduct)
             );
@@ -160,11 +184,20 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Quits the application.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionExitApplication(ActionEvent event) {
         System.exit(0);
     }
 
+    /**
+     * Go to the "Modify Part" screen.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionModifyPart(ActionEvent event) throws IOException {
         Part selectedPart = (Part)partsTable.getSelectionModel().getSelectedItem();
@@ -177,6 +210,11 @@ public class MainController implements Initializable {
                 "Acme IMS - Modify Part");
     }
 
+    /**
+     * Go to the "Modify Product" screen.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @throws IOException if .fxml filename cannot be found
+     */
     @FXML
     void onActionModifyProduct(ActionEvent event) throws IOException {
         Product selectedProduct = (Product)productsTable.getSelectionModel().getSelectedItem();
@@ -189,6 +227,12 @@ public class MainController implements Initializable {
                 "Acme IMS - Modify Product");
     }
 
+    /**
+     * Searches the Inventory for any part name or ID that at least partially matches the search string.
+     * <p>Each time the user presses a key this updates the listing of parts found in partsTable.</p>
+     * <p>If search string is null, all parts are displayed.</p>
+     * @param event user generated event (a key pressed) that caused this to execute
+     */
     @FXML
     void partSearchKeyTyped(KeyEvent event) {
         String query = partSearchTxt.getText().trim();
@@ -213,6 +257,12 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Searches the Inventory for any product name or ID that at least partially matches the search string.
+     * <p>Each time the user presses a key this updates the listing of products found in productsTable.</p>
+     * <p>If search string is null, all products are displayed.</p>
+     * @param event user generated event (a key pressed) that caused this to execute
+     */
     @FXML
     void productSearchKeyTyped(KeyEvent event) {
         String query = productSearchTxt.getText().trim();

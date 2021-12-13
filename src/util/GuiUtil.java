@@ -19,16 +19,23 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 /**
- * Contains helper functions for changing scenes
- * Use for easier maintenance of code
- * instead of code duplication
+ * Contains helper functions for changing scenes and displaying dialog boxes to user.
+ * <p>Use for easier maintenance of code
+ * instead of code duplication</p>
  * @author Joseph Curtis
  * @version 2021.12.07
  */
 
-public class GuiUtil {
+public final class GuiUtil {
 
-    // switches scene to create new part/product
+    /**
+     * Switches scene to Create New Part or Product form.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param fxmlFileName the .fxml file holding the next scene
+     * @param windowTitle the new window title to set
+     * @return FXML Loader for use when getting the controller
+     * @throws IOException if .fxml filename cannot be found
+     */
     public static FXMLLoader changeScene(ActionEvent event,
                                          String fxmlFileName,
                                          String windowTitle) throws IOException {
@@ -45,7 +52,16 @@ public class GuiUtil {
         return loader;
     }
 
-    // switches scene to Modify Part
+    /**
+     * Switches scene to Modify Part form.
+     * <p>The fields are populated with data from the existing part that is to be edited.</p>
+     * @see PartController#setExistingPart(Part)
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param passedPart the part to modify
+     * @param fxmlFileName the .fxml file holding the next scene
+     * @param windowTitle the new window title to set
+     * @throws IOException if .fxml filename cannot be found
+     */
     public static void changeScenePassPart(ActionEvent event,
                                            Part passedPart,
                                            String fxmlFileName,
@@ -57,7 +73,16 @@ public class GuiUtil {
         modifyPartController.setExistingPart(passedPart);
     }
 
-    // switches scene to Modify Product
+    /**
+     * Switches scene to Modify Product form.
+     * <p>The fields are populated with data from the existing product that is to be edited.</p>
+     * @see ProductController#setExistingProduct(Product)
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param passedProduct the product to modify
+     * @param fxmlFileName the .fxml file holding the next scene
+     * @param windowTitle the new window title to set
+     * @throws IOException if .fxml filename cannot be found
+     */
     public static void changeScenePassProduct(ActionEvent event,
                                               Product passedProduct,
                                               String fxmlFileName,
@@ -69,7 +94,16 @@ public class GuiUtil {
         modifyProductController.setExistingProduct(passedProduct);
     }
 
-    // displays confirmation for removing or deleting parts or products
+    /**
+     * Displays a confirmation dialog for removing or deleting parts or products.
+     * <p>When the user confirms by clicking "OK", the lambda function will execute.
+     * If the lambda returns false, this indicates the delete operation was not successful.
+     * In this case an error dialog is shown.</p>
+     * @param title Dialog box window title
+     * @param header Dialog box header text
+     * @param content details within confirmation dialog box
+     * @param lambda the operation to execute when the user clicks "OK"
+     */
     public static void confirmDeletion(String title,
                                        String header,
                                        String content,
@@ -91,6 +125,13 @@ public class GuiUtil {
         }
     }
 
+    /**
+     * Handles input validation for parsing an int from a text field.
+     * @param textField the field in question that threw the error
+     * @param fieldName the name of the input field
+     * @return an int value parsed from input
+     * @throws InvalidInputException for controller to handle by halting its operation
+     */
     public static int parseIntAndHandleException(TextField textField,
                                                  String fieldName) throws InvalidInputException {
         try {
@@ -107,6 +148,13 @@ public class GuiUtil {
         }
     }
 
+    /**
+     * Handles input validation for parsing a double from a text field.
+     * @param textField the field in question that threw the error
+     * @param fieldName the name of the input field
+     * @return a double value parsed from input
+     * @throws InvalidInputException for controller to handle by halting its operation
+     */
     public static double parseDoubleAndHandleException(TextField textField,
                                                        String fieldName) throws InvalidInputException {
         try {
@@ -123,6 +171,11 @@ public class GuiUtil {
         }
     }
 
+    /**
+     * Gives user an Error dialog box to warn of a serious problem with the Inventory object.
+     * This should appear when there is concurrent activity writing to the Inventory.
+     * @param exception thrown exception indicating the problem
+     */
     public static void handleInvObjNotFoundException(InvObjNotFoundException exception) {
         Alert inventoryError = new Alert(Alert.AlertType.ERROR);
         inventoryError.setHeaderText("Error in Inventory");
@@ -130,6 +183,10 @@ public class GuiUtil {
         inventoryError.showAndWait();
     }
 
+    /**
+     * Pops up dialog box warning user of black input fields.
+     * @param exception indicator of a blank field that needs to be inputted
+     */
     public static void handleBlankInputException(BlankInputException exception) {
         Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
         blankTextWarning.setHeaderText(exception.getMessage());
@@ -137,6 +194,11 @@ public class GuiUtil {
         blankTextWarning.showAndWait();
     }
 
+    /**
+     * Displays dialog box in response to a logical error (input validation).
+     * @param content details given to user about the logical error
+     * @throws InvalidInputException for controller to handle by halting its operation
+     */
     public static void handleLogicalError(String content) throws InvalidInputException {
         Alert deleteError = new Alert(Alert.AlertType.WARNING);
         deleteError.setHeaderText("Input Validation");

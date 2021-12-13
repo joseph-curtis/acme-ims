@@ -1,21 +1,5 @@
-package main;
-
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import model.Part;
-import model.Product;
-
-import java.io.IOException;
-import java.util.Objects;
-
 /**
- * The main class for the Acme IMS Application.
- * This is where the JVM starts program execution.
- * Contains the Java <code>main</code> method.
+ * A single class file where the JVM begins program execution.
  * <br>
  * <h1>JavaDocs folder is located within the root folder, ie: acme-ims\javadocs\</h1>
  * <br>
@@ -57,39 +41,5 @@ import java.util.Objects;
  * the method implementation (as commented out code).<br>
  * Please see: {@link model.Inventory#updatePart(int, model.Part)} and
  * {@link model.Inventory#updateProduct(int, model.Product)} source code.</p>
- * @author Joseph Curtis
- * @version 2021.12.09
  */
-
-public class IMS_Application extends Application {
-    /**
-     * Launches JavaFX GUI.
-     * <p>Grabs container hierarchy from .fxml file</p>
-     * <p>Uses static method to call <code>load</code> and get the root (parent node).
-     * Then creates a new scene and sets the primaryStage to show it.</p>
-     * <p>Controllers use methods from the <code>GuiUtil</code> class
-     *  for better code encapsulation.</p>
-     * @see util.GuiUtil#changeScene(ActionEvent, String, String)
-     * @see util.GuiUtil#changeScenePassPart(ActionEvent, Part, String, String)
-     * @see util.GuiUtil#changeScenePassProduct(ActionEvent, Product, String, String)
-     * @param primaryStage The primary window where the application resides.
-     * @throws IOException if the .fxml file cannot be found.
-     */
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/MainForm.fxml")));
-
-        primaryStage.setTitle("Acme IMS - Main");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
-    }
-
-    /**
-     * The Java main method where execution begins.
-     * <p>This has only one statement that starts the application.</p>
-     * @param args arguments passed from the OS (not used)
-     */
-    public static void main(String[] args) {
-        Application.launch(args);
-    }
-}
+package main;

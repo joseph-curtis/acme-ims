@@ -32,8 +32,8 @@ public class InvObjNotFoundException extends Exception {
         this.orphanedObject = orphanedObject;
     }
 
-    /**
-     * @return A diagnostic string containing basic exception info
+    /** Returns a diagnostic description of this exception.
+     * @return A string containing basic exception info
      */
     @Override
     public String toString() {

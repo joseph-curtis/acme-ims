@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
 /**
  * The Inventory class for the data layer. Note that there is only one
  * inventory, so all properties and methods are static.
- * This is where static data stored for parts & products resides
+ * This is where the static data for all parts and products resides.
  * @author Joseph Curtis
  * @version 2021.12.08
  */
@@ -17,14 +17,17 @@ public class Inventory {
     private static int partsIdCounter = 0;
     private static int productsIdCounter = 0;
 
-    //  Static Initializer to create test data.
+    /** Static Initializer to create test data.
+     * @requires Inventory#addTestData()
+     */
     static {
         addTestData();
     }
 
-    /** Helper function to implement adding test data
+    /** Helper function to implement adding test data.
+     * Adds data to test while the IMS Application is in production.
      */
-    private static void addTestData() {
+    protected static void addTestData() {
         InHouse widget = new InHouse(getNewPartId(), "Widget", 7.77, 7, 1, 70, 195);
         InHouse gadget = new InHouse(getNewPartId(), "Gadget", 12.50, 12, 1, 144, 482);
         Outsourced gizmo = new Outsourced(getNewPartId(), "Gizmo", 0.25, 100, 10, 1000, "W.E. Coyote Industries");
@@ -118,7 +121,16 @@ public class Inventory {
     }
 
     /**
-     * Replaces an existing Part with a modified one
+     * Replaces an existing Part with a modified one.
+     * <h2>FUTURE ENHANCEMENT</h2>
+     * <p>This method does not need the <code>index</code> to the <code>allParts</code>
+     * ObservableList.  By requiring it, we need to handle a possible
+     * exception if the data in Inventory changes from when <code>updatePart</code> is
+     * called and the ObservableList is actually set! If we change the method
+     * signature to only accept the <code>selectedPart</code> as a parameter, we ensure
+     * accuracy in the case of concurrent operations.</p>
+     * <p>A possible solution using a for each loop is written below
+     * the method implementation (as commented out code).</p>
      * @param index the index in allParts to target
      * @param selectedPart Part to replace existing object in allParts
      */
@@ -141,7 +153,16 @@ public class Inventory {
     }
 
     /**
-     * Replaces an existing Product with a modified one
+     * Replaces an existing Product with a modified one.
+     * <h2>FUTURE ENHANCEMENT</h2>
+     * <p>This method does not need the <code>index</code> to the <code>allProducts</code>
+     * ObservableList.  By requiring it, we need to handle a possible
+     * exception if the data in Inventory changes from when <code>updateProduct</code> is
+     * called and the ObservableList is actually set! If we change the method
+     * signature to only accept the <code>newProduct</code> as a parameter, we ensure
+     * accuracy in the case of concurrent operations.</p>
+     * <p>A possible solution using a for each loop is written below
+     * the method implementation (as commented out code).</p>
      * @param index the index in allProducts to target
      * @param newProduct Product to replace existing object in allProducts
      */
@@ -182,6 +203,7 @@ public class Inventory {
     }
 
     /**
+     * Gets all products currently saved in Inventory.
      * @return the list of all parts in inventory
      */
     public static ObservableList<Part> getAllParts() {
@@ -189,6 +211,7 @@ public class Inventory {
     }
 
     /**
+     * Gets all products currently saved in Inventory.
      * @return the list of all products in inventory
      */
     public static ObservableList<Product> getAllProducts() {

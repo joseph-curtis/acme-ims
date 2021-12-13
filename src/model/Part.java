@@ -14,6 +14,16 @@ public abstract class Part {
     private int min;
     private int max;
 
+
+    /**
+     * Constructor for creating a part with every field initialized.
+     * @param id part id
+     * @param name name of part
+     * @param price price/cost of part
+     * @param stock current inventory stock of part
+     * @param min minimum inventory stock allowed of part
+     * @param max maximum inventory stock allowed of part
+     */
     public Part(int id, String name, double price, int stock, int min, int max) {
         this.id = id;
         this.name = name;
@@ -31,6 +41,10 @@ public abstract class Part {
     }
 
     /**
+     * Change the part ID.
+     * <p><strong>WARNING:</strong><br>
+     * It is <em>HIGHLY</em> recommended to ensure you are using an ID that is <em><u>unique</u></em> to the inventory!</p>
+     * @see Inventory#getNewPartId()
      * @param id the id to set
      */
     public void setId(int id) {
