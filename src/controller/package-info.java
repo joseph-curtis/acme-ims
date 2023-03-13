@@ -16,6 +16,7 @@
 /**
  * Provides Controller classes as part of Model-View-Controller (MVC).
  * <p>Relies on JavaFX to display and manipulate the GUI.</p>
+ * <p>If you use this software, please cite it as indicated in the CITATION.cff file.</p>
  * Link to JavaFX documentation:
  * <a href="https://javadoc.io/doc/org.openjfx/javafx-graphics/17.0.1/index.html">
  *     javafx-graphics 17.0.1 javadoc</a>

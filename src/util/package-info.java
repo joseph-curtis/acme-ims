@@ -16,5 +16,6 @@
 /**
  * Contains exceptions and common user-interface operations.
  * <p>This allows for better code encapsulation, ensuring predictable behavior.</p>
+ * <p>If you use this software, please cite it as indicated in the CITATION.cff file.</p>
  */
 package util;

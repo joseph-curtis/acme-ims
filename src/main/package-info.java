@@ -15,6 +15,7 @@
 
 /**
  * A single class file where the JVM begins program execution.
+ * <p>If you use this software, please cite it as indicated in the CITATION.cff file.</p>
  * <br>
  * <h1>JavaDocs folder is located within the root folder, ie: acme-ims\javadocs\</h1>
  * <br>
